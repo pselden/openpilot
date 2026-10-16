@@ -23,17 +23,9 @@ at least once within the selected window; it does not imply it stayed asserted.
 The bit layout is the Honda DBC definition for legacy five-byte LKAS_HUD and
 split LKAS_HUD_A/B. This is not a generic cross-platform CAN fault decoder.
 
-Current evidence
-The old and patched startup logs both raise camera RDM_PROBLEM approximately
-200 ms after the radar-disable request transmits. The patched HUD changes
-RDM_OFF on powertrain bus 1. Panda does not forward bus 1 to camera bus 2, and
-the non-CAN-FD controller does not send the camera-side radar replacement stream
-used for CAN-FD. Vehicle-side routing and camera ECU semantics remain unknown.
-Camera messages already report RDM_OFF before their RDM_PROBLEM flag rises.
-
-A stock-longitudinal comparison and camera ECU diagnostic trouble codes are
-needed to distinguish loss of radar communication from failure to disable RDM.
-The Odyssey firmware database identifies the forward camera request address as
-0x18DAB5F1. That is a diagnostic lead, not authorization to change ECU state.
-Do not assume a camera-side HUD copy will repair the fault, mask RDM_PROBLEM,
-or weaken Panda safety checks to make a test pass.
+Current findings and corrections
+See README.odyssey-rdm.md in this directory for the consolidated evidence,
+radar 0x400 transition, RDM_OFF limits, source links, and remaining tests.
+It supersedes the earlier missing-traffic and wrong-bus hypotheses: forwarded
+radar traffic is visible in Panda TX echoes, and vehicle-side routing remains
+unresolved. RDM_PROBLEM persisting does not prove RDM_OFF is ineffective.
