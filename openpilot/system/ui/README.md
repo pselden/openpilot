@@ -21,3 +21,17 @@ Style guide:
 * All graphical elements should subclass [`Widget`](/openpilot/system/ui/widgets/__init__.py).
   * Prefer a stateful widget over a function for easy migration from QT
 * All internal class variables and functions should be prefixed with `_`
+
+## Odyssey startup animation
+
+The startup spinner displays brikowski's white Odyssey Sport with rotating wheels
+and a scrolling road. It retains numeric progress and startup text on both display
+sizes. Preview with `BIG=1 python -m openpilot.system.ui.spinner`.
+
+Ported from `brikowski/openpilot:ody-op-test` at
+`434780d9e59b0c080d8f5212bda5f39afa7decf5`, including the matching shader-version
+fix. The illustration is stored directly in Git to avoid fork-specific LFS failures.
+Wheel coordinates and rendering are in `lib/odyssey_scene.py`.
+
+This replaces the application startup spinner. It does not install brikowski's
+optional AGNOS compositor override or change the firmware splash partition.
