@@ -1,4 +1,4 @@
-"""RehkopfPilot what's-new card: RELEASE_NOTES.md section for the installed codename, shown once after an update."""
+"""OdyPilot what's-new card: RELEASE_NOTES.md section for the installed codename, shown once after an update."""
 from openpilot.common.build_name import get_build_name
 from openpilot.common.params import Params
 from openpilot.common.prefix import OpenpilotPrefix

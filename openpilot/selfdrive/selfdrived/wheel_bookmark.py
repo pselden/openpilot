@@ -1,4 +1,4 @@
-"""RehkopfPilot: double-tap CANCEL on the steering wheel to bookmark the drive.
+"""OdyPilot: double-tap CANCEL on the steering wheel to bookmark the drive.
 
 msgq allows one publisher per service and the UI owns userBookmark, so selfdrived only counts double-taps
 (selfdriveStateSP.wheelBookmarkCount) and the UI publishes the bookmark, the same way as the onroad swipe.

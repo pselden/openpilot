@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Pre-push checklist for RehkopfPilot releases. Run from a PC build of this fork (WSL / Ubuntu 24.04).
+# Pre-push checklist for OdyPilot releases. Run from a PC build of this fork (WSL / Ubuntu 24.04).
 # usage: tools/ody/prepush.sh [--full] [--target ody-next|ody-test] [--rlogs DIR]
 #   default (~4 min): build, models on PC, code scans, unit/UI tests, Honda car + safety tests,
 #                     replay of a recorded Odyssey segment, submodule pins, release bump
@@ -31,7 +31,7 @@ step() {  # name, command...   (required)
 }
 warn() { printf "  WARN  %s\n" "$*"; WARNS+=("$*"); }
 
-echo "RehkopfPilot pre-push: $(git log --oneline -1) -> ${TARGET:-<no target>}"
+echo "OdyPilot pre-push: $(git log --oneline -1) -> ${TARGET:-<no target>}"
 echo "build: $(cat BUILD_NAME 2>/dev/null) $(grep -o '"[^"]*"' openpilot/sunnypilot/common/version.h)"
 
 # 1. build (params keys are compiled in, so a stale build gives false UnknownKeyName failures)

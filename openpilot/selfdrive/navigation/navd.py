@@ -50,7 +50,7 @@ class RouteEngine:
     self.recompute_hold = 0
     self.reroute_counter = 0
 
-    # RehkopfPilot: a personal Mapbox token (param MapboxToken, never backed up) routes without comma prime,
+    # OdyPilot: a personal Mapbox token (param MapboxToken, never backed up) routes without comma prime,
     # whose nav proxy answers 403 for non-prime devices
     self.mapbox_token = os.environ.get("MAPBOX_TOKEN") or self.params.get("MapboxToken") or None
     self.api = Api(self.params.get("DongleId")) if self.mapbox_token is None else None

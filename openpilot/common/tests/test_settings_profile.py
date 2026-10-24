@@ -1,4 +1,4 @@
-"""RehkopfPilot settings profile (settings_profile.json): baseline settings after a reinstall or a sunnylink restore."""
+"""OdyPilot settings profile (settings_profile.json): baseline settings after a reinstall or a sunnylink restore."""
 import json
 
 from openpilot.common.params import Params

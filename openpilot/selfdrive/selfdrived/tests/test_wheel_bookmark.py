@@ -1,4 +1,4 @@
-"""RehkopfPilot: double-tap CANCEL on the steering wheel saves a bookmark."""
+"""OdyPilot: double-tap CANCEL on the steering wheel saves a bookmark."""
 from opendbc.car.structs import car
 from openpilot.cereal import custom, log
 from openpilot.selfdrive.selfdrived.events import EVENTS, ET

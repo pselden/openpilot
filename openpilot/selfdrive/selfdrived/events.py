@@ -75,7 +75,7 @@ def startup_master_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubM
     branch = "replay"
   build = f"{branch} • {build_label(get_commit())}" if get_commit() else branch
 
-  return StartupAlert("RehkopfPilot", build, alert_status=AlertStatus.userPrompt)
+  return StartupAlert("OdyPilot", build, alert_status=AlertStatus.userPrompt)
 
 def below_engage_speed_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubMaster, metric: bool, soft_disable_time: int, personality) -> Alert:
   return NoEntryAlert(f"Drive above {get_display_speed(CP.minEnableSpeed, metric)} to engage")
@@ -833,7 +833,7 @@ EVENTS: dict[int, dict[str, Alert | AlertCallbackType]] = {
     ET.WARNING: personality_changed_alert,
   },
 
-  # RehkopfPilot: chime so a steering-wheel bookmark (double-tap CANCEL) is confirmed by ear
+  # OdyPilot: chime so a steering-wheel bookmark (double-tap CANCEL) is confirmed by ear
   EventName.userBookmark: {
     ET.PERMANENT: Alert("Bookmark Saved", "", AlertStatus.normal, AlertSize.small,
                         Priority.LOWER, VisualAlert.none, AudibleAlertSP.promptSingleHigh, 1.5),

@@ -11,7 +11,7 @@ TurnDirection = custom.ModelDataV2SP.TurnDirection
 LANE_CHANGE_SPEED_MIN = 20 * CV.MPH_TO_MS
 LANE_CHANGE_TIME_MAX = 10.
 LANE_CHANGE_START_TIME = 0.5
-# RehkopfPilot: a blinker while braking (or within this long after braking) means a turn, not a lane change.
+# OdyPilot: a blinker while braking (or within this long after braking) means a turn, not a lane change.
 # Without this, steering into an intersection turn counts as the lane-change nudge in "nudge" mode.
 # Scored on four Odyssey drives: blocks 82% of intersection turns at steer-in, keeps 96% of lane changes.
 TURN_INTENT_BRAKE_WINDOW = 2.0  # s

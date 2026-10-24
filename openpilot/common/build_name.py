@@ -8,7 +8,7 @@ BUILD_NAME_PATH = os.path.join(BASEDIR, "BUILD_NAME")
 
 @cache
 def get_build_name() -> str:
-  """RehkopfPilot release codename (Georgia places, A to Z), from the BUILD_NAME file at the repo root."""
+  """OdyPilot release codename (Georgia places, A to Z), from the BUILD_NAME file at the repo root."""
   try:
     with open(BUILD_NAME_PATH) as f:
       return f.read().strip()

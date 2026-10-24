@@ -44,7 +44,7 @@ class TestManager(OpenpilotTestCase):
 
     os.environ['PREPAREONLY'] = '1'
     manager.main()
-    # RehkopfPilot: settings_profile.json deliberately overrides some defaults on a fresh install
+    # OdyPilot: settings_profile.json deliberately overrides some defaults on a fresh install
     profile = (load_profile() or {}).get("params", {})
     for k in params.all_keys():
       key = k.decode() if isinstance(k, bytes) else k

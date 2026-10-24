@@ -1,4 +1,4 @@
-"""RehkopfPilot onroad status pills: what each row says for a given state (pure logic, no window)."""
+"""OdyPilot onroad status pills: what each row says for a given state (pure logic, no window)."""
 import pytest
 
 from openpilot.selfdrive.ui.sunnypilot.mici.onroad.status_pills import pill_rows, PillInputs

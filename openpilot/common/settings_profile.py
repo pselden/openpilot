@@ -17,7 +17,7 @@ def load_profile(path: str = PROFILE_PATH) -> dict | None:
 
 
 def apply_settings_profile(params, force: bool = False, path: str = PROFILE_PATH) -> list[str]:
-  """Apply RehkopfPilot's baseline settings. Without force, only when this profile version hasn't been applied yet
+  """Apply OdyPilot's baseline settings. Without force, only when this profile version hasn't been applied yet
   (a reinstall wipes params, so it applies again). Keys this build doesn't have are skipped. Returns keys written."""
   profile = load_profile(path)
   if not profile:

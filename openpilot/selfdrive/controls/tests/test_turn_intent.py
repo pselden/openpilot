@@ -1,4 +1,4 @@
-"""RehkopfPilot: a blinker with recent braking is a turn, not a lane change (desire_helper TURN_INTENT_BRAKE_WINDOW)."""
+"""OdyPilot: a blinker with recent braking is a turn, not a lane change (desire_helper TURN_INTENT_BRAKE_WINDOW)."""
 from types import SimpleNamespace
 
 from openpilot.cereal import log

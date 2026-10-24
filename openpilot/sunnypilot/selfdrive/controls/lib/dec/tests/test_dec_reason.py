@@ -1,4 +1,4 @@
-"""RehkopfPilot: DEC publishes why it chose blended mode (dec.reason())."""
+"""OdyPilot: DEC publishes why it chose blended mode (dec.reason())."""
 from types import SimpleNamespace
 
 from openpilot.sunnypilot.selfdrive.controls.lib.dec.dec import DynamicExperimentalController, TRAJECTORY_SIZE, CURVE_YAW

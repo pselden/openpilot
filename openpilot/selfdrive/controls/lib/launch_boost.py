@@ -1,4 +1,4 @@
-"""RehkopfPilot: green-light launch, ported from comma's better-green-lights branch (2026-07, not merged upstream).
+"""OdyPilot: green-light launch, ported from comma's better-green-lights branch (2026-07, not merged upstream).
 
 From a stop, the driving model's plan starts with a slow creep before it commits to moving. Once the model plans to
 be past LAUNCH_DISARM_SPEED by LAUNCH_COMMIT_T, skip ahead to the part of its plan where it is already moving and

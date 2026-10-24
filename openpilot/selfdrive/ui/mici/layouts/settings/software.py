@@ -203,7 +203,7 @@ class Fork:
 # "switch branch" still accepts any branch name on the target fork.
 FORKS = (
   Fork("OdyPilot", "https://github.com/pselden/openpilot.git", ("ody-test",)),
-  Fork("RehkopfPilot", "https://github.com/prehkopf/openpilot.git", ("ody-next", "ody-test")),
+  Fork("Patrick", "https://github.com/prehkopf/openpilot.git", ("ody-next", "ody-test")),
   Fork("MVL", "https://github.com/mvl-boston/openpilot.git", ("sp-honda-202607", "sp-honda-dev-202608")),
   Fork("brikowski", "https://github.com/brikowski/openpilot.git", ("ody-op", "ody-op-test")),
   Fork("sunnypilot", "https://github.com/sunnypilot/sunnypilot.git", ("release-mici", "release-mici-staging")),
@@ -250,7 +250,7 @@ class ForkSelectPage(NavScroller):
     buttons = []
     for fork in FORKS:
       owner = fork.url.split("github.com/")[-1].removesuffix(".git").split("/")[0]
-      # no icon: it would wrap "RehkopfPilot" mid-word; the current fork is marked in the subtitle instead
+      # Keep fork names on one line; identify the current fork in the subtitle.
       btn = BigButton(fork.name, f"{owner} • current" if fork == current else owner)
       btn.set_click_callback(lambda f=fork: gui_app.push_widget(ForkBranchPage(f, self._picked)))
       buttons.append(btn)
@@ -331,7 +331,7 @@ def target_label(params) -> str:
 class TargetBranchButton(BigButton):
   def __init__(self, check_update_btn: CheckUpdateButton):
     super().__init__("target branch", target_label(ui_state.params),
-                     description="Pick whose software (OdyPilot, RehkopfPilot, MVL, brikowski, ...) and which build to download.")
+                     description="Pick whose software (OdyPilot, Patrick, MVL, brikowski, ...) and which build to download.")
     self._check_update_btn = check_update_btn
     self.set_click_callback(self._on_click)
     self.set_visible(not ui_state.params.get_bool("IsTestedBranch"))

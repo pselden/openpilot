@@ -34,7 +34,7 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"DisableUpdates", {PERSISTENT | BACKUP, BOOL, "0"}},
     {"SettingsProfileApplied", {PERSISTENT, STRING}},
     {"WhatsNewSeenBuild", {PERSISTENT, STRING}},
-    {"UpdaterTargetRemote", {PERSISTENT, STRING}},  // RehkopfPilot: fork URL picked in the branch switcher  // RehkopfPilot: codename whose what's-new card was last shown  // RehkopfPilot settings_profile.json version last applied
+    {"UpdaterTargetRemote", {PERSISTENT, STRING}},  // OdyPilot: fork URL picked in the branch switcher  // OdyPilot: codename whose what's-new card was last shown  // OdyPilot settings_profile.json version last applied
     {"DisengageOnAccelerator", {PERSISTENT | BACKUP, BOOL, "0"}},
     {"DongleId", {PERSISTENT, STRING}},
     {"DoReboot", {CLEAR_ON_MANAGER_START, BOOL}},
@@ -211,14 +211,14 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"LongitudinalPersonality", {PERSISTENT | BACKUP, INT, std::to_string(static_cast<int>(cereal::LongitudinalPersonality::STANDARD))}},
     {"NavigationEnabled", {PERSISTENT, BOOL, "0"}},
     {"NavDestination", {CLEAR_ON_MANAGER_START | CLEAR_ON_OFFROAD_TRANSITION, JSON}},
-    // RehkopfPilot navigation without prime: a personal Mapbox token and saved places, kept on the device (no BACKUP)
+    // OdyPilot navigation without prime: a personal Mapbox token and saved places, kept on the device (no BACKUP)
     {"MapboxToken", {PERSISTENT, STRING}},
     {"NavFavorites", {PERSISTENT, JSON}},
     {"NetworkMetered", {PERSISTENT | BACKUP, BOOL}},
     {"ObdMultiplexingChanged", {CLEAR_ON_MANAGER_START | CLEAR_ON_ONROAD_TRANSITION, BOOL}},
     {"ObdMultiplexingEnabled", {CLEAR_ON_MANAGER_START | CLEAR_ON_ONROAD_TRANSITION, BOOL}},
     {"Offroad_CarUnrecognized", {CLEAR_ON_MANAGER_START | CLEAR_ON_ONROAD_TRANSITION, JSON}},
-    {"Offroad_WhatsNew", {CLEAR_ON_ONROAD_TRANSITION, JSON}},  // RehkopfPilot: shown after an update until the next drive
+    {"Offroad_WhatsNew", {CLEAR_ON_ONROAD_TRANSITION, JSON}},  // OdyPilot: shown after an update until the next drive
     {"Offroad_ChestnutBranch", {CLEAR_ON_MANAGER_START, JSON}},
     {"Offroad_ChestnutModelError", {CLEAR_ON_MANAGER_START, JSON}},
     {"Offroad_ChestnutNotDetected", {CLEAR_ON_MANAGER_START | CLEAR_ON_ONROAD_TRANSITION, JSON}},

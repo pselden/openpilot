@@ -29,7 +29,7 @@ SP_ICONS = "../../sunnypilot/selfdrive/assets"
 
 
 class SettingsLayoutSP(OP.SettingsLayout):
-  """RehkopfPilot settings home: five groups by task instead of one page per code owner.
+  """OdyPilot settings home: five groups by task instead of one page per code owner.
   driving / software / screen & alerts / privacy / system"""
   def __init__(self):
     # the stock pages are built once here and opened from inside the groups

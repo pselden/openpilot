@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "about": "RehkopfPilot baseline settings. Applied once per version at startup (so after a reinstall) and again after a sunnylink restore. A baseline, not a lock: changes made on the device afterwards stick. Bump 'version' to re-apply.",
+  "about": "OdyPilot baseline settings. Applied once per version at startup (so after a reinstall) and again after a sunnylink restore. A baseline, not a lock: changes made on the device afterwards stick. Bump 'version' to re-apply.",
   "params": {
     "AlphaLongitudinalEnabled": true,
     "DynamicExperimentalControl": true,

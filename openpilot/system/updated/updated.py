@@ -356,7 +356,7 @@ class Updater:
         set_offroad_alert("Offroad_ConnectivityNeededPrompt", True, extra_text=f"{remaining} hour{'' if remaining == 1 else 's'}.")
 
   def apply_target_remote(self, path: str = OVERLAY_MERGED) -> None:
-    """RehkopfPilot: point origin at the fork picked in the branch switcher (UpdaterTargetRemote) before listing or
+    """OdyPilot: point origin at the fork picked in the branch switcher (UpdaterTargetRemote) before listing or
     fetching. The finalized update carries the new origin, so later updates keep following that fork."""
     url = self.params.get("UpdaterTargetRemote")
     if not url:

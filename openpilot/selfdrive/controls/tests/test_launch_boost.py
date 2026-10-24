@@ -1,4 +1,4 @@
-"""RehkopfPilot green-light launch: raises the model's accel only for a committed launch from a stop."""
+"""OdyPilot green-light launch: raises the model's accel only for a committed launch from a stop."""
 import numpy as np
 import pytest
 

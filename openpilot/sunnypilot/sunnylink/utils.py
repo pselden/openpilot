@@ -100,7 +100,7 @@ def save_param_from_base64_encoded_string(param_name: str, base64_encoded_data: 
 
 
 def _decode_param_value(data: str, param_type: ParamKeyType, is_compressed: bool) -> bytes:
-  """base64 (optionally gzipped) to bytes. RehkopfPilot: a text setting that isn't valid base64 text is taken as
+  """base64 (optionally gzipped) to bytes. OdyPilot: a text setting that isn't valid base64 text is taken as
   plain text, since the sunnylink web app has been seen sending some (OsmLocationTitle) unencoded."""
   try:
     value = base64.b64decode(data, validate=True)

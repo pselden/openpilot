@@ -1,4 +1,4 @@
-"""RehkopfPilot: sunnylink saveParams accepts a text setting sent as plain text instead of base64."""
+"""OdyPilot: sunnylink saveParams accepts a text setting sent as plain text instead of base64."""
 import base64
 import binascii
 import gzip

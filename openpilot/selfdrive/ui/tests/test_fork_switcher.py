@@ -1,10 +1,10 @@
-"""RehkopfPilot user-first branch switcher: pick the fork, then the branch; the updater follows the chosen fork."""
+"""OdyPilot user-first branch switcher: pick the fork, then the branch; the updater follows the chosen fork."""
 import subprocess
 
 from openpilot.selfdrive.ui.mici.layouts.settings.software import (FORKS, HOME_FORK, branch_options, fork_for_url, target_label,
                                                                    target_remote)
 
-PATRICK = next(f for f in FORKS if f.name == "RehkopfPilot")
+PATRICK = next(f for f in FORKS if f.name == "Patrick")
 MVL = next(f for f in FORKS if f.name == "MVL")
 
 

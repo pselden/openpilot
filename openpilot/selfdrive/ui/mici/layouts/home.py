@@ -218,7 +218,7 @@ class MiciHomeLayout(Widget):
       date_str = datetime.datetime.fromtimestamp(unix_ts).strftime("%b %d")
     except (ValueError, IndexError, TypeError, AttributeError):
       date_str = ""
-    # RehkopfPilot versions are the release date (YYYY.MM.DD), so the commit date would just repeat it
+    # OdyPilot versions are the release date (YYYY.MM.DD), so the commit date would just repeat it
     if re.match(r"\d{4}\.\d{2}\.\d{2}", version):
       date_str = ""
 

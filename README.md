@@ -15,7 +15,7 @@ code is included for completeness but is not installed or run automatically; see
 
 | Who | What this build uses |
 |---|---|
-| [**Patrick Rehkopf**](https://github.com/prehkopf/openpilot) | The ody-test integration, Odyssey features, navigation, settings, and original RehkopfPilot interface. |
+| [**Patrick Rehkopf**](https://github.com/prehkopf/openpilot) | The ody-test integration, Odyssey features, navigation, settings, and original interface. |
 | [**brikowski**](https://github.com/brikowski) ([openpilot `ody-op`](https://github.com/brikowski/openpilot/tree/ody-op), [opendbc `ody-op`](https://github.com/brikowski/opendbc/tree/ody-op)) | The Odyssey longitudinal controller: gas, brake and coast handling with grade compensation and gas-response feedback. Also the Odyssey steering authority (`STEER_MAX` 3840) with its torque tune, the panda safety limits for Odyssey longitudinal, the fix that stops the set speed jumping to 65 mph on engage, the `longControlState` ordering fix in controlsd, the low-memory branch switch in `op.sh`, and the Odyssey test suite this build's tests are based on. |
 | [**MVL (mvl-boston)**](https://github.com/mvl-boston) ([openpilot](https://github.com/mvl-boston/openpilot), [opendbc](https://github.com/mvl-boston/opendbc)) | The Honda dev branch (`sp-honda-dev-202608`) underneath: Honda tuning across the lineup, Honda button handling with all-speed MADS, the torque-map steering, and the branch switcher. This fork mirrors all MVL branches so the switcher can still reach them. |
 | [**sunnypilot**](https://github.com/sunnypilot/sunnypilot) | The base: MADS, Dynamic Experimental Control, the settings UI, the model store, and the October 2026 comma sync. |
@@ -26,10 +26,10 @@ If this build is useful to you, the thanks go to them. If you have an Odyssey an
 ## Branches
 
 `ody-test` is maintained in [pselden/openpilot](https://github.com/pselden/openpilot/tree/ody-test).
-The branch picker identifies this fork as OdyPilot and retains access to Patrick's
-RehkopfPilot, MVL, brikowski, sunnypilot, and comma forks.
+The branch picker identifies this fork as OdyPilot and retains access to the
+Patrick, MVL, brikowski, sunnypilot, and comma forks.
 
-## Inherited RehkopfPilot releases
+## Inherited Patrick Rehkopf releases
 
 Each release is named after a place in Georgia, A to Z, and versioned by its release date (`YYYY.MM.DD`, with `.2`, `.3` for later releases the same day). The comma shows the name on the home screen and startup banner, for example "Buckhead • 5c3aa0d", and shows a short "what's new" card after an update.
 
@@ -64,7 +64,7 @@ Chattahoochee plus a quicker launch from a stop.
 Buckhead SP1 plus a reorganized settings menu on the comma four.
 
 - **Settings in five groups, most-used first:** driving, software, screen & alerts, privacy, system. Before, options were spread over Toggles, Device, Developer, Software and the sunnylink web app.
-- **Driving** starts with **van load**, then personality, Dynamic Experimental Control, lane change, Experimental mode, MADS and enable RehkopfPilot.
+- **Driving** starts with **van load**, then personality, Dynamic Experimental Control, lane change, Experimental mode, MADS and enable OdyPilot.
 - **MADS on/off and lane change mode** (nudge, nudgeless, 0.5-3 s, off) can now be changed on the comma. Before, only the sunnylink web app had them. MADS only changes with the car off, as in sunnypilot.
 - Van load and onroad screen moved off the Device page, so nothing appears twice. The metric units button is gone (the setting stays at mph).
 - **Software** holds updates & branch, models and sunnylink. **System** holds device, network, developer and firehose. Pairing still opens straight to the pairing card.
@@ -80,7 +80,7 @@ A service pack: Buckhead plus fixes picked from upstream on 2026-10-18.
 - **GPS startup fixes** (comma #39071, #39083). comma #39079 (start from the last GPS position) is left out: it stores LastGPSPosition in a binary format that sunnypilot's map features (map Smart Cruise Control, map speed limits) cannot read.
 - **Steadier timing after a hiccup.** Control loops resync after a stall instead of running catch-up frames (comma #39095).
 - **Offroad alert when uploads are being ignored** (comma #39104).
-- **Not taken on purpose:** comma 0.11.3 makes Experimental mode ("Auto-speed") permanent and removes Chill mode, and sunnypilot then removed Dynamic Experimental Control. RehkopfPilot keeps DEC.
+- **Not taken on purpose:** comma 0.11.3 makes Experimental mode ("Auto-speed") permanent and removes Chill mode, and sunnypilot then removed Dynamic Experimental Control. OdyPilot keeps DEC.
 - **Tests:** an Odyssey downhill test now checks against the Odyssey's own gas-map floor (-0.2) instead of MVL's generic Bosch value.
 
 ### Buckhead (2026.10.18.2)
@@ -91,7 +91,7 @@ A service pack: Buckhead plus fixes picked from upstream on 2026-10-18.
 - **Dim at night.** An onroad screen option that follows the light down to 10% brightness.
 - **Settings profile.** My chosen settings are re-applied after a reinstall or a sunnylink restore (alpha longitudinal, DEC, personality, MADS, screen, updates on).
 - **"What's new" card** after an update.
-- **Branch switcher: pick the fork, then the branch** (RehkopfPilot, MVL, brikowski, sunnypilot, comma). It only offers branches that exist, and warns before a one-way switch to another fork.
+- **Branch switcher: pick the fork, then the branch** (OdyPilot, Patrick, MVL, brikowski, sunnypilot, comma). It only offers branches that exist, and warns before a one-way switch to another fork.
 - **Pre-push checklist** (`tools/ody/prepush.sh`) run before every release.
 - **Bug fixes & improvements.** sunnylink settings sync no longer drops a text setting the web app sends unencoded.
 
@@ -101,7 +101,7 @@ A service pack: Buckhead plus fixes picked from upstream on 2026-10-18.
 - **Dynamic Experimental Control toggle** on the comma four.
 - Release codenames and release-date versions.
 - **Model runtime fix.** tinygrad is pinned to a version that contains comma's pin, so driver monitoring and the driving model load on the device. Without it, setup stuck on "looking for driver".
-- RehkopfPilot branding: home screen, boot logo, startup banner and screensaver.
+- OdyPilot branding: home screen, boot logo, startup banner and screensaver.
 
 ## Roadmap
 

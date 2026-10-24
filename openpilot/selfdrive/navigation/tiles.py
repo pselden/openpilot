@@ -19,7 +19,7 @@ def nav_root() -> Path:
 
 
 def local_map() -> Path:
-  """RehkopfPilot: an offline Protomaps extract (for example Georgia, from build.protomaps.com via `pmtiles extract`).
+  """OdyPilot: an offline Protomaps extract (for example Georgia, from build.protomaps.com via `pmtiles extract`).
   Without prime the hosted archive answers 403, and offline the map keeps working without internet."""
   return nav_root() / 'map.pmtiles'
 

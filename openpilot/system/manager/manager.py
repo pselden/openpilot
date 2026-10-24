@@ -61,7 +61,7 @@ def manager_init() -> None:
     if default_value is not None and params.get(k) is None:
       params.put(k, default_value, block=True)
 
-  # RehkopfPilot baseline settings, once per profile version (so again after a reinstall)
+  # OdyPilot baseline settings, once per profile version (so again after a reinstall)
   apply_settings_profile(params)
   show_whats_new(params, set_offroad_alert)
 

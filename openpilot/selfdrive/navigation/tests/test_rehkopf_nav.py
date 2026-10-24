@@ -1,4 +1,4 @@
-"""RehkopfPilot navigation without prime: offline map file, personal Mapbox token, no secrets or places in logs."""
+"""OdyPilot navigation without prime: offline map file, personal Mapbox token, no secrets or places in logs."""
 import tempfile
 import unittest
 from contextlib import closing

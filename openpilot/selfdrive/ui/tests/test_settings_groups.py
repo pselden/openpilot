@@ -1,4 +1,4 @@
-"""RehkopfPilot comma four settings: five task groups, nothing lost, nothing duplicated (no window needed)."""
+"""OdyPilot comma four settings: five task groups, nothing lost, nothing duplicated (no window needed)."""
 import re
 from pathlib import Path
 from types import SimpleNamespace
