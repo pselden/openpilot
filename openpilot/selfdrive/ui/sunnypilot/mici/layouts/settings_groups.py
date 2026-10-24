@@ -79,8 +79,8 @@ class DrivingGroup(GroupLayout):
                                              "and the LKAS button turns steering on by itself.\n" +
                                              "Change it with the car off.")
     self._lane_change = LaneChangeModeToggle()
-    self._enable = BigParamControl("enable RehkopfPilot", "OpenpilotEnabledToggle", toggle_callback=restart_needed_callback,
-                                   description="Enable to use RehkopfPilot driver assistance.\n" +
+    self._enable = BigParamControl("enable OdyPilot", "OpenpilotEnabledToggle", toggle_callback=restart_needed_callback,
+                                   description="Enable to use OdyPilot driver assistance.\n" +
                                                "Disable to use your car's stock driver assistance.")
     # most-changed first: load and destination change with every trip, MADS and enable only with the car off
     super().__init__([self._load, self._destination, self._personality, self._dec, self._lane_change, self._experimental,
@@ -135,7 +135,7 @@ class RecordingGroup(GroupLayout):
                                  description="Record microphone audio while driving.\n" +
                                              "Audio is included in dashcam videos in sunnylink.")
     always_on_dm = BigParamControl("always-on driver monitor", "AlwaysOnDM",
-                                   description="Monitor the driver even when RehkopfPilot is not engaged.")
+                                   description="Monitor the driver even when OdyPilot is not engaged.")
     super().__init__([record_front, record_mic, always_on_dm])
     record_front.set_enabled(False if ui_state.params.get_bool("RecordFrontLock") else (lambda: not ui_state.engaged))
     record_mic.set_enabled(lambda: not ui_state.engaged)

@@ -4,6 +4,7 @@ import subprocess
 from openpilot.selfdrive.ui.mici.layouts.settings.software import (FORKS, HOME_FORK, branch_options, fork_for_url, target_label,
                                                                    target_remote)
 
+PATRICK = next(f for f in FORKS if f.name == "RehkopfPilot")
 MVL = next(f for f in FORKS if f.name == "MVL")
 
 
@@ -16,17 +17,19 @@ class FakeParams:
 
 
 def test_fork_for_url_normalizes():
-  assert fork_for_url("https://github.com/prehkopf/openpilot.git") == HOME_FORK
-  assert fork_for_url("https://github.com/PREHKOPF/openpilot/") == HOME_FORK
+  assert fork_for_url("https://github.com/pselden/openpilot.git") == HOME_FORK
+  assert fork_for_url("https://github.com/prehkopf/openpilot.git") == PATRICK
+  assert fork_for_url("https://github.com/PSELDEN/openpilot/") == HOME_FORK
+  assert fork_for_url("https://github.com/PREHKOPF/openpilot/") == PATRICK
   assert fork_for_url("https://github.com/mvl-boston/openpilot") == MVL
   assert fork_for_url("https://example.com/x.git") is None
 
 
 def test_branch_options_filter_to_existing_and_keep_installed():
   remote = {"ody-next", "ody-test", "ody-sg", "some-accord-branch"}
-  assert branch_options(HOME_FORK, remote, HOME_FORK.url, "ody-next") == ["ody-next", "ody-test"]
+  assert branch_options(HOME_FORK, remote, HOME_FORK.url, "ody-test") == ["ody-test"]
   # installed branch outside the curated list is still offered, first, on its own fork only
-  assert branch_options(HOME_FORK, remote, HOME_FORK.url, "ody-sg") == ["ody-sg", "ody-next", "ody-test"]
+  assert branch_options(HOME_FORK, remote, HOME_FORK.url, "ody-sg") == ["ody-sg", "ody-test"]
   assert branch_options(MVL, {"sp-honda-202607", "sp-honda-dev-202608", "ody-sg"}, HOME_FORK.url, "ody-sg") == \
     ["sp-honda-202607", "sp-honda-dev-202608"]
   # curated names that don't exist on the remote are not offered

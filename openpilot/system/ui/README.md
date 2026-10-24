@@ -33,5 +33,6 @@ Ported from `brikowski/openpilot:ody-op-test` at
 fix. The illustration is stored directly in Git to avoid fork-specific LFS failures.
 Wheel coordinates and rendering are in `lib/odyssey_scene.py`.
 
-This replaces the application startup spinner. It does not install brikowski's
-optional AGNOS compositor override or change the firmware splash partition.
+The matching early-OS wrapper and firmware splash packer are in
+`openpilot/tools/odyssey_boot.py`. These stages need the one-time device setup
+described in [the boot-theme guide](/docs/odypilot-boot.md).

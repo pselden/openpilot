@@ -1,19 +1,21 @@
-# RehkopfPilot: sunnypilot for the Honda Odyssey
+# OdyPilot: sunnypilot for the Honda Odyssey
 
-**RehkopfPilot** is my personal build for a **2022 Honda Odyssey** (`HONDA_ODYSSEY_5G_MMR`, Bosch) on a **comma four**, with openpilot longitudinal control. It combines three people's work:
+**OdyPilot** is Paul Selden's personal Odyssey build, based on
+[Patrick Rehkopf's ody-test](https://github.com/prehkopf/openpilot/tree/ody-test).
+It preserves that branch's Odyssey controls and adds the TSFDOM loader fixes and
+brikowski's Odyssey startup artwork. Credit for the base driving software belongs
+to Patrick, brikowski, MVL, sunnypilot, and comma.ai.
 
-- [**sunnypilot**](https://github.com/sunnypilot/sunnypilot): the feature set (MADS, Dynamic Experimental Control and the rest).
-- [**MVL (mvl-boston)**](https://github.com/mvl-boston/openpilot): his Honda dev branch.
-- [**brikowski**](https://github.com/brikowski/openpilot): the `ody-op` Odyssey longitudinal and steering tuning.
-
-All three sit on top of [comma.ai's openpilot](https://github.com/commaai/openpilot).
-
-Almost nothing here is mine. My part is merging the three, the Odyssey-specific fixes needed to make them agree, a few comma four screen features, and the testing. Credit for anything that drives well belongs to the people below.
+Install: `installer.comma.ai/pselden/ody-test`.
+The application animation updates with the branch. Optional early-boot helper
+code is included for completeness but is not installed or run automatically; see
+[the boot-theme guide](docs/odypilot-boot.md).
 
 ## Credits
 
 | Who | What this build uses |
 |---|---|
+| [**Patrick Rehkopf**](https://github.com/prehkopf/openpilot) | The ody-test integration, Odyssey features, navigation, settings, and original RehkopfPilot interface. |
 | [**brikowski**](https://github.com/brikowski) ([openpilot `ody-op`](https://github.com/brikowski/openpilot/tree/ody-op), [opendbc `ody-op`](https://github.com/brikowski/opendbc/tree/ody-op)) | The Odyssey longitudinal controller: gas, brake and coast handling with grade compensation and gas-response feedback. Also the Odyssey steering authority (`STEER_MAX` 3840) with its torque tune, the panda safety limits for Odyssey longitudinal, the fix that stops the set speed jumping to 65 mph on engage, the `longControlState` ordering fix in controlsd, the low-memory branch switch in `op.sh`, and the Odyssey test suite this build's tests are based on. |
 | [**MVL (mvl-boston)**](https://github.com/mvl-boston) ([openpilot](https://github.com/mvl-boston/openpilot), [opendbc](https://github.com/mvl-boston/opendbc)) | The Honda dev branch (`sp-honda-dev-202608`) underneath: Honda tuning across the lineup, Honda button handling with all-speed MADS, the torque-map steering, and the branch switcher. This fork mirrors all MVL branches so the switcher can still reach them. |
 | [**sunnypilot**](https://github.com/sunnypilot/sunnypilot) | The base: MADS, Dynamic Experimental Control, the settings UI, the model store, and the October 2026 comma sync. |
@@ -23,15 +25,11 @@ If this build is useful to you, the thanks go to them. If you have an Odyssey an
 
 ## Branches
 
-| Branch | Status | Install URL |
-|---|---|---|
-| `ody-next` | My daily driver. Currently **Atlanta**. | `installer.comma.ai/prehkopf/ody-next` |
-| `ody-test` | The next release, on test drives before it moves to `ody-next`. Currently **Etowah**. Also has a **van load** setting (Empty / Family / Family + luggage) that adds gas for a heavier van; still being calibrated on loaded drives. | `installer.comma.ai/prehkopf/ody-test` |
-| MVL's branches (`sp-honda-*`, …) | Unchanged mirrors of [mvl-boston/openpilot](https://github.com/mvl-boston/openpilot) | through the branch switcher |
+`ody-test` is maintained in [pselden/openpilot](https://github.com/pselden/openpilot/tree/ody-test).
+The branch picker identifies this fork as OdyPilot and retains access to Patrick's
+RehkopfPilot, MVL, brikowski, sunnypilot, and comma forks.
 
-The matching car code lives in [prehkopf/opendbc](https://github.com/prehkopf/opendbc) on branches of the same names.
-
-## Releases
+## Inherited RehkopfPilot releases
 
 Each release is named after a place in Georgia, A to Z, and versioned by its release date (`YYYY.MM.DD`, with `.2`, `.3` for later releases the same day). The comma shows the name on the home screen and startup banner, for example "Buckhead • 5c3aa0d", and shows a short "what's new" card after an update.
 

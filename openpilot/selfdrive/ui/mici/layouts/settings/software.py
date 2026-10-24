@@ -202,6 +202,7 @@ class Fork:
 # Pick the fork first, then the branch. The installed branch is always offered for the installed fork, and
 # "switch branch" still accepts any branch name on the target fork.
 FORKS = (
+  Fork("OdyPilot", "https://github.com/pselden/openpilot.git", ("ody-test",)),
   Fork("RehkopfPilot", "https://github.com/prehkopf/openpilot.git", ("ody-next", "ody-test")),
   Fork("MVL", "https://github.com/mvl-boston/openpilot.git", ("sp-honda-202607", "sp-honda-dev-202608")),
   Fork("brikowski", "https://github.com/brikowski/openpilot.git", ("ody-op", "ody-op-test")),
@@ -209,7 +210,7 @@ FORKS = (
   Fork("comma", "https://github.com/commaai/openpilot.git", ("release-mici", "nightly")),
 )
 HOME_FORK = FORKS[0]
-HOME_INSTALL = "prehkopf/ody-next"
+HOME_INSTALL = "pselden/ody-test"
 
 
 def _norm(url: str) -> str:
@@ -330,7 +331,7 @@ def target_label(params) -> str:
 class TargetBranchButton(BigButton):
   def __init__(self, check_update_btn: CheckUpdateButton):
     super().__init__("target branch", target_label(ui_state.params),
-                     description="Pick whose software (RehkopfPilot, MVL, brikowski, ...) and which build to download.")
+                     description="Pick whose software (OdyPilot, RehkopfPilot, MVL, brikowski, ...) and which build to download.")
     self._check_update_btn = check_update_btn
     self.set_click_callback(self._on_click)
     self.set_visible(not ui_state.params.get_bool("IsTestedBranch"))
@@ -378,10 +379,10 @@ class SoftwareLayoutMici(NavScroller):
     def uninstall_openpilot_callback():
       ui_state.params.put_bool("DoUninstall", True, block=True)
 
-    uninstall_openpilot_btn = EngagedConfirmationButton("uninstall RehkopfPilot", "uninstall",
+    uninstall_openpilot_btn = EngagedConfirmationButton("uninstall OdyPilot", "uninstall",
                                                         gui_app.texture("icons_mici/settings/device/uninstall.png", 64, 64),
                                                         uninstall_openpilot_callback, exit_on_confirm=False,
-                                                        description="Remove RehkopfPilot from this device.",
+                                                        description="Remove OdyPilot from this device.",
                                                         description_icon=gui_app.texture("icons_mici/setup/factory_reset.png", 64, 64))
 
     self._scroller.add_widgets([
