@@ -24,8 +24,8 @@ Style guide:
 
 ## Odyssey startup animation
 
-The startup spinner displays brikowski's white Odyssey Sport with rotating wheels
-and a scrolling road. It retains numeric progress and startup text on both display
+The startup spinner displays a Smoke Blue Pearl Odyssey with rotating wheels and
+a scrolling road, adapted from brikowski's artwork. It retains numeric progress and startup text on both display
 sizes. Preview with `BIG=1 python -m openpilot.system.ui.spinner`.
 
 Ported from `brikowski/openpilot:ody-op-test` at
