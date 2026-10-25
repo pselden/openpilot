@@ -7,6 +7,13 @@ brikowski's Odyssey startup artwork. Credit for the base driving software belong
 to Patrick, brikowski, MVL, sunnypilot, and comma.ai.
 
 Install: `installer.comma.ai/pselden/ody-test`.
+
+MVL's Honda cluster HUD changes retain a valid previous set speed while ACC is off
+and show MADS armed/lateral-active states through the lane indicators. These are
+instrument-cluster changes, separate from the comma display. The vehicle-code pin
+uses [pselden/opendbc](https://github.com/pselden/opendbc/tree/codex-odyssey-hud),
+based on Patrick's existing Odyssey tune with only these HUD changes added.
+
 The application animation updates with the branch. Optional early-boot helper
 code is included for completeness but is not installed or run automatically; see
 [the boot-theme guide](docs/odypilot-boot.md).

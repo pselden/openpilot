@@ -3,8 +3,8 @@
   url = https://github.com/sunnyhaibin/panda.git
 [submodule "opendbc"]
   path = opendbc_repo
-  url = https://github.com/prehkopf/opendbc
-  branch = ody-test
+  url = https://github.com/pselden/opendbc.git
+  branch = codex-odyssey-hud
 [submodule "msgq"]
   path = msgq_repo
   url = https://github.com/sunnypilot/msgq.git
