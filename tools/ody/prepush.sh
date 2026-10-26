@@ -39,6 +39,7 @@ step build scons -j"$(nproc)"
 
 # 2. the processes no unit test starts: driving model + driver monitoring, loaded and run on PC
 step models python "$CHECKS/model_e2e.py"
+step model_store python "$CHECKS/model_store.py"
 
 # 3. static scans: unresolved imports, unregistered params keys, unknown services
 step imports python -I "$CHECKS/importscan.py" "$ROOT"
@@ -78,6 +79,7 @@ SEG=$(ls -d "$RLOGS"/*--*--* 2>/dev/null | sort -V | tail -40 | head -1)
 if [ -n "$SEG" ]; then step replay python tools/ody/replay_segments.py "$SEG"; else warn "no rlogs at $RLOGS, skipped own-drive replay"; fi
 #    factory mode leaves the van stock: card passive, noOutput safety, nothing sent (no radar silence)
 if [ -n "$SEG" ]; then step factory_mode python "$CHECKS/factory_mode.py" "$SEG"; fi
+if [ -n "$SEG" ]; then step turn_lane_change python "$CHECKS/turn_lane_change.py" "$RLOGS"; fi
 
 # 6. submodule pins: does our tinygrad contain the pin comma's current master expects? (informational)
 python "$CHECKS/pin_check.py" > "$LOG/pins.log" 2>&1; sed 's/^/        /' "$LOG/pins.log"

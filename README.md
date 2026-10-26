@@ -188,8 +188,9 @@ the existing lateral-control pipeline.
 The existing `latAccelFactor` and friction rescaling are preserved, as are delta
 2 and the approximately 77-count limit per 10 ms control frame. This expands the
 available ceiling without intentionally amplifying ordinary steering demands or
-increasing the nominal command slew. Requests are clipped to ±3840; output is
-zero when lateral control is inactive. These counts are commands, not measured
+increasing the nominal command slew. Fractional slew state is retained between
+frames; actuator telemetry reports the integer command actually sent. Requests
+are clipped to ±3840; output is zero when lateral control is inactive. These counts are commands, not measured
 wheel torque.
 
 **Physical behavior remains unverified on this Odyssey.** Patrick's inherited

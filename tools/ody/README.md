@@ -23,6 +23,8 @@ tools/ody/prepush.sh --full     # + opendbc's whole suite and the A/B replay
 
 What it checks, and why:
 
+- **model_store:** checks the live catalog selector version and samples a TSFDOM artifact header for the plain-artifact format. This catches catalog/format mismatches; it does not prove full inference or on-device timing. Prints WARN when offline.
+- **turn_lane_change:** replays DesireHelper over recorded routes, comparing lane changes started in turns and genuine lane-change episodes with the recorded build. Needs sufficiently long local rlogs. `drive_report/lane_change_check.py` reports the recorded episodes separately.
 - **models:** loads and runs the stock driving model and driver monitoring through their real entry points (`checks/model_e2e.py`). No unit test starts these processes. In October 2026 a tinygrad pin that didn't match comma's model code crashed driver monitoring on the device and blocked onboarding. With that pin put back, this check fails.
 - **imports / params / services:** static scans (`checks/`) for imports of modules or names that no longer exist, params keys that aren't registered, and SubMaster/PubMaster services cereal doesn't know. Upstream merges break all three silently.
 - **pytest:** openpilot + sunnypilot unit and UI tests. Three locationd/calibrationd scenario tests are deselected because they assert comma's thresholds, which MVL widened on purpose for mount tolerance.
