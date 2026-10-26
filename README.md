@@ -139,7 +139,6 @@ These are plans in rough order, not promises. Anything that changes how the van 
 - An emergency-braking layer to partly make up for the stock collision braking that openpilot longitudinal turns off. `ody-test` only, with safety tests.
 - Slowing for exit ramps from map data, on off-ramps only, never before the ramp splits off.
 - Handling remote start cleanly.
-- Low-speed steering: let the steering gate open below 34 mph on a test branch (see [Steering limits](#steering-limits-odyssey)). This could also simply go to brikowski, since the gate is his.
 
 **Watching upstream**
 - comma's opendbc #3165 keeps openpilot accelerating while you press the gas. It changes panda safety for every brand and has no reviews yet, so it waits for comma to merge it.
@@ -167,30 +166,43 @@ Odyssey-specific details:
 
 - **Longitudinal.** brikowski's controller replaces the generic Honda Bosch gas and wind learner for the Odyssey only. Every other Honda keeps MVL's behavior.
 - **Actuator delay is 0.5 s** on the Odyssey. brikowski's controller is tuned at 0.5 s. MVL uses 0.25 s for Bosch, but a fit of my own drives also puts the van at 0.5 s.
-- **Steering.** STEER_MAX is 3840 with delta 2, behind brikowski's steering-authority gate (normally 2560); see [Steering limits](#steering-limits-odyssey). Platform flags are `BOSCH_ALT_BRAKE | BOSCH_ALT_RADAR` (safetyParam 259).
+- **Steering.** STEER_MAX is 3840 with delta 2, available whenever lateral control requests it. The tune remains rescaled to preserve ordinary command gain and slew; see [Steering limits](#steering-limits-odyssey). Platform flags are `BOSCH_ALT_BRAKE | BOSCH_ALT_RADAR` (safetyParam 259).
 - **Experimental mode.** Gas taps add a small, temporary acceleration boost (comma's AccelBoost). This works with Dynamic Experimental Control.
 - **comma four screen.** An "onroad screen" picker on the Device page: always on, 15 s or 3 min (Buckhead adds dim at night).
 - **Kept from comma:** the block on openpilot sending AEB. Stock emergency braking is not available with openpilot longitudinal on Bosch Hondas. openpilot's forward collision warning and hard braking still work.
 
 ## Steering limits (Odyssey)
 
-Short version: this build steers with less top-end torque than MVL's on purpose. It stays in the range where the Odyssey's steering responds cleanly, and opens more only when the van is clearly missing a curve.
+`sp-ody` follows Patrick's `0005f6b5c` and brikowski's `cef93020`: the Odyssey
+controller can request the full **3840 CAN-count range** while lateral control is
+active. There is no additional 34–74 mph entry window or 0.2-second tracking-error
+gate. Ordinary engagement, driver-override, and steering-fault handling remain in
+the existing lateral-control pipeline.
 
-| | Normal limit | Highest limit | Torque rise per frame |
-|---|---|---|---|
-| comma (opendbc, 2026-10) | 2560 | 2560 | 3 |
-| MVL `sp-honda-dev-202608` | 4096 | 4096 | 3 |
-| This build (brikowski's controller) | 2560 | 3840 | 2 |
+| Version | Command ceiling | Extra authority gate |
+|---|---|---|
+| Previous `sp-ody` | 2560 normally, 3840 conditionally | Speed and persistent tracking error |
+| Current `sp-ody` / Patrick's full-range change | 3840 | None |
+| Brikowski stable application pin `6821a6494` | 2560 | None |
 
-- comma's opendbc caps the Odyssey MMR at 2560, with the note "Odyssey MMR uses up to 2560 for LKA; higher RDM commands are nonlinear and also apply brake drag." Above 2560 the van treats the command like Road Departure Mitigation: the steering response is no longer proportional, and the brakes drag.
-- MVL allows the full 4096 at all times. MVL's own code notes that the top end isn't characterized yet.
-- brikowski's gate keeps steering at 2560 normally. It opens to 3840 (6% below MVL's maximum) only at 15-33 m/s (34-74 mph), when the request is already at 2560, the planned curve bends the same way, and the van has been more than 0.10 m/s² short of it for 0.2 s.
-- On my drives (99 minutes of hands-off steering, October 2026):
-  - Under 34 mph, steering sat at the 2560 limit 9.8% of the time, running a median 0.17 m/s² wide of the planned curve while limited.
-  - At 34-55 mph it was at the limit 3.7% of the time, and the gate opened past 2560 for 76 seconds in total.
-  - Above 55 mph it was under 1%.
-  - So the gate mostly matters in town, where it never opens. Above 34 mph it does its job.
-- The script is `tools/ody/drive_report/steer_cap_report.py`. A possible next step is a test branch that lets the gate open below 34 mph, watching for steering faults and brake drag. That decision is shared with brikowski.
+The existing `latAccelFactor` and friction rescaling are preserved, as are delta
+2 and the approximately 77-count limit per 10 ms control frame. This expands the
+available ceiling without intentionally amplifying ordinary steering demands or
+increasing the nominal command slew. Requests are clipped to ±3840; output is
+zero when lateral control is inactive. These counts are commands, not measured
+wheel torque.
+
+**Physical behavior remains unverified on this Odyssey.** Patrick's inherited
+[steering documentation](https://github.com/prehkopf/openpilot/blob/57455eaff310e1aa3245e33d93efde374e5e1e46/README.md#steering-limits-odyssey)
+warns of nonlinear steering response and brake drag above 2560. This warning is
+retained even though his current branch also removes the gate. The software
+regressions verify emitted commands, clipping, slew, and inactive output; they
+cannot establish the EPS response or rule out brake drag or steering faults.
+No EPS firmware, Panda safety, or vehicle settings changes accompany this port.
+
+The historical drive percentages in Patrick's release notes describe his drives,
+not validation of this personal build. Source, test results, and rollback revision
+are recorded in [the October 26 update](docs/odypilot-20261026.md#full-range-steering-follow-up).
 
 ## Testing
 
