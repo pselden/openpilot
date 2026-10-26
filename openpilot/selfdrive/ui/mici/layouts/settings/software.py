@@ -1,5 +1,5 @@
+from openpilot.common.forks import FORKS, HOME_FORK, HOME_INSTALL, Fork, fork_for_url, normalize_remote
 import subprocess
-from dataclasses import dataclass
 import threading
 import pyray as rl
 from enum import IntEnum
@@ -192,34 +192,6 @@ class InstallUpdateButton(BigButton):
     threading.Thread(target=run, daemon=True).start()
 
 
-@dataclass(frozen=True)
-class Fork:
-  name: str
-  url: str
-  branches: tuple[str, ...]  # the builds worth offering for this van; only those that exist on the remote are shown
-
-
-# Pick the fork first, then the branch. The installed branch is always offered for the installed fork, and
-# "switch branch" still accepts any branch name on the target fork.
-FORKS = (
-  Fork("OdyPilot", "https://github.com/pselden/openpilot.git", ("ody-test",)),
-  Fork("Patrick", "https://github.com/prehkopf/openpilot.git", ("ody-next", "ody-test")),
-  Fork("MVL", "https://github.com/mvl-boston/openpilot.git", ("sp-honda-202607", "sp-honda-dev-202608")),
-  Fork("brikowski", "https://github.com/brikowski/openpilot.git", ("ody-op", "ody-op-test")),
-  Fork("sunnypilot", "https://github.com/sunnypilot/sunnypilot.git", ("release-mici", "release-mici-staging")),
-  Fork("comma", "https://github.com/commaai/openpilot.git", ("release-mici", "nightly")),
-)
-HOME_FORK = FORKS[0]
-HOME_INSTALL = "pselden/ody-test"
-
-
-def _norm(url: str) -> str:
-  return url.strip().lower().rstrip("/").removesuffix(".git")
-
-
-def fork_for_url(url: str) -> Fork | None:
-  return next((f for f in FORKS if _norm(f.url) == _norm(url)), None)
-
 
 def target_remote(params) -> str:
   """The remote the next update downloads from: the chosen one, else the installed one."""
@@ -229,7 +201,7 @@ def target_remote(params) -> str:
 def branch_options(fork: Fork, remote_branches: set[str], installed_remote: str, installed_branch: str) -> list[str]:
   """Branches to offer for a fork: its curated list, filtered to what exists, plus the installed branch on its fork."""
   options = [b for b in fork.branches if b in remote_branches]
-  if _norm(fork.url) == _norm(installed_remote) and installed_branch in remote_branches and installed_branch not in options:
+  if normalize_remote(fork.url) == normalize_remote(installed_remote) and installed_branch in remote_branches and installed_branch not in options:
     options.insert(0, installed_branch)
   return options
 

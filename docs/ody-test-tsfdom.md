@@ -1,4 +1,31 @@
-# TSFDOM model compatibility branch
+# TSFDOM model compatibility
+
+The maintained personal branch is `pselden/openpilot:sp-ody`.
+
+## Current implementation (October 26, 2026)
+
+This branch uses Patrick's model/runtime stack at
+[`57455eaff`](https://github.com/prehkopf/openpilot/commit/57455eaff310e1aa3245e33d93efde374e5e1e46),
+with tinygrad `92b742f711c7d216fd3ed7a46a30a959e3c43bd4`.
+The loader, compiler, upstream-pickle converter, model manager, download-progress
+schema/UI, and matching default big-model artifacts move together.
+
+Patrick and our earlier fix use the same underlying sunnypilot solution: plain
+`SPTGPLN1` GPU artifacts and rebuilding runtime objects when loading. Our earlier
+port also registered `ChestnutRetry`, which remains registered. The updated
+compiler handles newer tinygrad kernel/allocation APIs; downloads use parallel
+ranges, retries, and speed/ETA reporting. This replaces our older implementation;
+there are not two competing TSFDOM workarounds.
+
+Select TSFDOM under Small Model after the update if it is not already selected.
+The model selector remains version 21. This update does not force a settings
+profile reset. Full QCOM inference, timing, camera odometry, and calibration
+progress still need on-device verification; local CPU tests do not prove these.
+
+## Original fix and validation history
+
+The following records the original October 21 port and its validation at that
+revision. Its runtime pin and test totals are historical, not the current build.
 
 `pselden/openpilot:ody-test` starts at Patrick's `ody-test` commit
 `18e36a3a7d87a7acc98dd531bf6e8795c961c35a` and imports these sunnypilot changes:
@@ -7,7 +34,7 @@
 - `e6864661c986f395a92c06674dab407ba35030f9`: convert upstream artifacts and combine camera-warp kernels with model execution.
 - Register the imported `ChestnutRetry` parameter with the same flags as upstream.
 
-The tinygrad pin remains `69fd4d34d4430036378aba2b43f9d339cdd6ea73`.
+At that revision, the tinygrad pin was `69fd4d34d4430036378aba2b43f9d339cdd6ea73`.
 Odyssey vehicle code, steering and longitudinal control, SPLC, and the settings
 profile are unchanged from Patrick's base.
 

@@ -2,17 +2,18 @@
 
 **OdyPilot** is Paul Selden's personal Odyssey build, based on
 [Patrick Rehkopf's ody-test](https://github.com/prehkopf/openpilot/tree/ody-test).
-It preserves that branch's Odyssey controls and adds the TSFDOM loader fixes and
-brikowski's Odyssey startup artwork. Credit for the base driving software belongs
+It preserves the selected Odyssey steering tune and adds model/runtime fixes,
+longitudinal response fixes, and brikowski's Odyssey startup artwork. Credit for the base driving software belongs
 to Patrick, brikowski, MVL, sunnypilot, and comma.ai.
 
-Install: `installer.comma.ai/pselden/ody-test`.
+Install: `installer.comma.ai/pselden/sp-ody`.
 
 MVL's Honda cluster HUD changes retain a valid previous set speed while ACC is off
 and show MADS armed/lateral-active states through the lane indicators. These are
 instrument-cluster changes, separate from the comma display. The vehicle-code pin
-uses [pselden/opendbc](https://github.com/pselden/opendbc/tree/codex-odyssey-hud),
-based on Patrick's existing Odyssey tune with only these HUD changes added.
+uses [pselden/opendbc](https://github.com/pselden/opendbc/tree/codex-odyssey-response-fixes),
+based on Patrick's existing Odyssey tune, with the HUD changes and selected
+brikowski gas/brake response fixes. See [the October 26 update](docs/odypilot-20261026.md).
 
 The application animation updates with the branch. Optional early-boot helper
 code is included for completeness but is not installed or run automatically; see
@@ -32,7 +33,8 @@ If this build is useful to you, the thanks go to them. If you have an Odyssey an
 
 ## Branches
 
-`ody-test` is maintained in [pselden/openpilot](https://github.com/pselden/openpilot/tree/ody-test).
+`sp-ody` is maintained in [pselden/openpilot](https://github.com/pselden/openpilot/tree/sp-ody).
+`ody-test` remains available at its previous revision.
 The branch picker identifies this fork as OdyPilot and retains access to the
 Patrick, MVL, brikowski, sunnypilot, and comma forks.
 

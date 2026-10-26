@@ -76,6 +76,8 @@ step honda_safety env PYTHONPATH="$ROOT/opendbc_repo:$ROOT" python -m pytest -q 
 # 5. card + controlsd from this build on a recorded Odyssey drive (newest pulled segment with openpilot long)
 SEG=$(ls -d "$RLOGS"/*--*--* 2>/dev/null | sort -V | tail -40 | head -1)
 if [ -n "$SEG" ]; then step replay python tools/ody/replay_segments.py "$SEG"; else warn "no rlogs at $RLOGS, skipped own-drive replay"; fi
+#    factory mode leaves the van stock: card passive, noOutput safety, nothing sent (no radar silence)
+if [ -n "$SEG" ]; then step factory_mode python "$CHECKS/factory_mode.py" "$SEG"; fi
 
 # 6. submodule pins: does our tinygrad contain the pin comma's current master expects? (informational)
 python "$CHECKS/pin_check.py" > "$LOG/pins.log" 2>&1; sed 's/^/        /' "$LOG/pins.log"

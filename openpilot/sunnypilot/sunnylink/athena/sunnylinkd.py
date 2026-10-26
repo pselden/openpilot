@@ -55,7 +55,13 @@ BLOCKED_PARAMS = {
   "HasAcceptedTermsSP",
   "OnroadCycleRequested",      # Prevent remote cycle trigger
   "ParamsVersion",         # Device-managed version counter
+  "UpdaterTargetRemote",   # OdyPilot: would point the updater at any git remote
+  "MapboxToken",           # OdyPilot: personal secret, set on the device only
+  "NavFavorites",          # OdyPilot: home and family places, set on the device only
 }
+
+# OdyPilot: never sent to sunnylink (a secret, and home and family places)
+UNREADABLE_PARAMS = {"MapboxToken", "NavFavorites"}
 
 
 def handle_long_poll(ws: WebSocket, exit_event: threading.Event | None) -> None:
@@ -207,7 +213,7 @@ def getParams(params_keys: list[str], compression: bool = False) -> str | dict[s
       ParamKeyType.BYTES.value: b"",
     }
 
-    param_keys_validated = [key for key in params_keys if key in available_keys]
+    param_keys_validated = [key for key in params_keys if key in available_keys and key not in UNREADABLE_PARAMS]
     params_dict: dict[str, list[dict[str, str | bool | int]]] = {"params": []}
     for key in param_keys_validated:
       value = get_param_as_byte(key)

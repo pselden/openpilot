@@ -113,6 +113,9 @@ struct SelfdriveStateSP @0x81c2f05a394cf4af {
 
     promptSingleLow @31;
     promptSingleHigh @32;
+
+    factoryModeOn @33;  # OdyPilot voice clips
+    factoryModeOff @34;
   }
 }
 
@@ -139,6 +142,9 @@ struct ModelManagerSP @0xaedffd8f31e7b55d {
     status @0 :DownloadStatus;
     progress @1 :Float32;
     eta @2 :UInt32;
+    speed @3 :Float32;
+    canceling @4 :Bool;
+    resuming @5 :Bool;
   }
 
   struct Chunk {
@@ -365,6 +371,9 @@ struct OnroadEventSP @0xda96579883444c35 {
     e2eChime @23;
     laneChangeRoadEdge @24;
     bigModelReady @25;
+    factoryModeOn @26;  # OdyPilot: switched to factory mode for the next start
+    factoryModeOff @27;  # OdyPilot: switched back to OdyPilot for the next start
+    factoryModeActive @28;  # OdyPilot: this drive is a stock car
   }
 }
 
