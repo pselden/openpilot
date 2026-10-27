@@ -34,7 +34,7 @@ OS installation is needed. An optional CLI is available for development:
 - `dropbox.py`: 8 MiB upload sessions with durable offsets, token refresh,
   acknowledgement-loss recovery, retries via the worker, and size/hash/path
   verification before confirming a backup.
-- `archived.py`: process-manager worker, started only when ArchiveEnabled is true.
+- `archived.py`: process-manager worker, started only when ArchiveEnabled is true and parked, unless onroad uploads are explicitly enabled.
   Rechecks network freshness, preferences, source state, and account identity
   between chunks. Credentials are not parameters and never enter Sunnylink sync.
 
@@ -79,7 +79,7 @@ References: [Dropbox OAuth](https://docs.dropboxapi.com/dropbox-api/docs/get-sta
 
 ## Local validation
 
-- 51 tests passed: queue restart/account separation, file selection and deletion,
+- 57 tests passed: queue restart/account separation, file selection and deletion,
   PKCE/private storage, token refresh, interrupted append/finish recovery,
   source modification, pause/HTTP/hash failures, existing Sunnylink and profile tests.
 - Sunnylink schema: 10 validation checks passed; parameter/import scans passed.

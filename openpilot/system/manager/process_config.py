@@ -98,7 +98,7 @@ def mapd_ready(started: bool, params: Params, CP: car.CarParams) -> bool:
   return bool(os.path.exists(Paths.mapd_root()))
 
 def archive_ready(started: bool, params: Params, CP: car.CarParams) -> bool:
-  return params.get_bool("ArchiveEnabled")
+  return params.get_bool("ArchiveEnabled") and (not started or params.get_bool("ArchiveOnroad"))
 
 
 def uploader_ready(started: bool, params: Params, CP: car.CarParams) -> bool:

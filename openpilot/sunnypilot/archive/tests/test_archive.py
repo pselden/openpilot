@@ -236,3 +236,19 @@ def test_http_failures_never_become_receipts(monkeypatch, recording, error):
     provider.upload(recording, Checkpoint(), lambda c: None, lambda: True)
   assert raised.value.status == error
   assert raised.value.retry_after == 60
+
+
+@pytest.mark.parametrize('enabled,started,onroad,expected', [
+  (False, False, False, False), (False, True, True, False),
+  (True, False, False, True), (True, True, False, False),
+  (True, False, True, True), (True, True, True, True),
+])
+def test_process_stays_stopped_when_disabled_or_parked_only(tmp_path, enabled, started, onroad, expected):
+  from openpilot.common.params import Params
+  from openpilot.system.manager.process_config import archive_ready
+  from opendbc.car.structs import car
+
+  params = Params(str(tmp_path))
+  params.put_bool('ArchiveEnabled', enabled, block=True)
+  params.put_bool('ArchiveOnroad', onroad, block=True)
+  assert archive_ready(started, params, car.CarParams.new_message()) is expected
