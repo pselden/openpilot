@@ -99,7 +99,7 @@ def response(status, data=None):
 def server(monkeypatch):
   """Only the HTTP boundary is replaced; requests, files, credentials and queue are real."""
   state = {'bytes': b'', 'metadata': None, 'refreshes': 0, 'offsets': [], 'lose_append': False, 'lose_finish': False,
-           'bad_hash': False, 'unauthorized': False}
+           'bad_hash': False, 'unauthorized': False, 'append_body': b'null'}
 
   def post(self, url, **kwargs):
     if url.endswith('/oauth2/token'):
@@ -125,7 +125,9 @@ def server(monkeypatch):
       if state['lose_append']:
         state['lose_append'] = False
         raise requests.Timeout('simulated connection loss')
-      return response(200)  # Dropbox's append response can have no body
+      result = response(200)
+      result._content = state['append_body']
+      return result
     if url.endswith('/finish'):
       digest = content_hash(io.BytesIO(state['bytes']))
       state['metadata'] = {'size': len(state['bytes']), 'rev': 'revision',
@@ -140,6 +142,15 @@ def server(monkeypatch):
   monkeypatch.setattr(requests.Session, 'post', post)
   monkeypatch.setattr(dropbox, 'CHUNK_SIZE', 4)
   return state
+
+
+@pytest.mark.parametrize('body', [b'', b'null'])
+def test_upload_accepts_successful_append_reply(server, recording, body):
+  server['append_body'] = body
+  provider = DropboxProvider(Credentials('app', 'refresh', 'account'))
+  receipt = provider.upload(recording, Checkpoint(), lambda c: None, lambda: True)
+  assert receipt.content_hash == content_hash(io.BytesIO(recording.path.read_bytes()))
+  assert server['metadata']['size'] == recording.size
 
 
 def test_pkce_link_private_storage_and_refresh(server, tmp_path):

@@ -61,7 +61,10 @@ class DropboxProvider:
         raise DropboxError(response.status_code, error, retry_after)
       if not response.content:
         return {}
-      return json_object(response.json())
+      result = response.json()
+      if result is None and endpoint == 'files/upload_session/append_v2':
+        return {}
+      return json_object(result)
     raise ArchiveError('Dropbox authorization failed; link again')
 
   def receipt(self, metadata: dict[str, object], recording: Recording, digest: str) -> Receipt:
