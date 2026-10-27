@@ -130,6 +130,8 @@ class DropboxLayout(GroupLayout):
     for button in (self._key, self._connect, self._disconnect):
       button.set_enabled(not ui_state.started and not self._busy)
     self._key.set_value(self._app_key or 'Enter public app key')
-    status = ui_state.params.get('ArchiveStatus') if ui_state.params.get_bool('ArchiveEnabled') else ''
-    self._status_text = self._message or status or ('Connected — backup disabled' if self._connected else 'Not connected')
+    enabled = ui_state.params.get_bool('ArchiveEnabled')
+    status = ui_state.params.get('ArchiveStatus') if enabled else ''
+    fallback = 'Waiting for backup worker' if enabled else ('Connected — backup disabled' if self._connected else 'Not connected')
+    self._status_text = self._message or status or fallback
     self._status.set_value(self._status_text)

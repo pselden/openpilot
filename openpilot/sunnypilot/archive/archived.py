@@ -17,8 +17,8 @@ from openpilot.sunnypilot.archive.dropbox import DropboxError, DropboxProvider
 def policy(params: Params) -> ArchivePolicy:
   return ArchivePolicy(enabled=params.get_bool('ArchiveEnabled'), onroad=params.get_bool('ArchiveOnroad'),
                        network=params.get('ArchiveNetwork', return_default=True),
-                       logs=params.get_bool('ArchiveLogs', return_default=True),
-                       road=params.get_bool('ArchiveRoad', return_default=True),
+                       logs=bool(params.get('ArchiveLogs', return_default=True)),
+                       road=bool(params.get('ArchiveRoad', return_default=True)),
                        preview=params.get_bool('ArchivePreview'), cabin=params.get_bool('ArchiveCabin'))
 
 

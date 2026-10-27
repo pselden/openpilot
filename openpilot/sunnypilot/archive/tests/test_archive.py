@@ -252,3 +252,21 @@ def test_process_stays_stopped_when_disabled_or_parked_only(tmp_path, enabled, s
   params.put_bool('ArchiveEnabled', enabled, block=True)
   params.put_bool('ArchiveOnroad', onroad, block=True)
   assert archive_ready(started, params, car.CarParams.new_message()) is expected
+
+
+@pytest.mark.parametrize('selected', [None, False, True])
+def test_worker_policy_reads_recording_defaults_and_saved_choices(tmp_path, selected):
+  from openpilot.common.params import Params
+  from openpilot.sunnypilot.archive.archived import policy
+
+  params = Params(str(tmp_path))
+  params.put_bool('ArchiveEnabled', True, block=True)
+  if selected is not None:
+    for key in ('ArchiveLogs', 'ArchiveRoad'):
+      params.put_bool(key, selected, block=True)
+  current = policy(params)
+  assert current.enabled
+  assert current.network == 0
+  assert current.logs is (True if selected is None else selected)
+  assert current.road is (True if selected is None else selected)
+  assert not current.onroad and not current.preview and not current.cabin
