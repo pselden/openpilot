@@ -24,6 +24,7 @@ class TestSunnylinkdMethods(OpenpilotTestCase):
 
   def test_saveParams_blocked(self):
     blocked_params = {
+      "ArchiveStatus": "fake backup success",
       "GithubUsername": "attacker",
       "GithubSshKeys": "ssh-rsa attacker_key",
     }

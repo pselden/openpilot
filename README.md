@@ -8,6 +8,11 @@ to Patrick, brikowski, MVL, sunnypilot, and comma.ai.
 
 Install: `installer.comma.ai/pselden/sp-ody`.
 
+**Dropbox prototype:** `sp-ody-dropbox` adds opt-in recording archives, resumable
+Dropbox uploads, on-device account linking, and Sunnylink settings. Backups are
+off by default and live Dropbox/device validation is pending. See
+[setup and limitations](docs/odypilot-dropbox.md).
+
 MVL's Honda cluster HUD changes retain a valid previous set speed while ACC is off
 and show MADS armed/lateral-active states through the lane indicators. These are
 instrument-cluster changes, separate from the comma display. The vehicle-code pin

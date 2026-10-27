@@ -46,6 +46,7 @@ params = Params()
 
 # Parameters that should never be remotely modified
 BLOCKED_PARAMS = {
+  "ArchiveStatus",         # Device-produced status; no credentials are stored in Params.
   "AdbEnabled",
   "CompletedSunnylinkConsentVersion",
   "CompletedTrainingVersion",

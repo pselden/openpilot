@@ -4,6 +4,7 @@ Copyright (c) 2021-, Haibin Wen, sunnypilot, and a number of other contributors.
 This file is part of sunnypilot and is licensed under the MIT License.
 See the LICENSE.md file in the root directory for more details.
 """
+from openpilot.selfdrive.ui.sunnypilot.mici.layouts.dropbox import DropboxLayout
 from openpilot.common.params import Params
 from openpilot.selfdrive.ui.mici.layouts.settings import settings as OP
 from openpilot.selfdrive.ui.mici.layouts.settings.settings import SettingsBigButton
@@ -41,6 +42,7 @@ class SettingsLayoutSP(OP.SettingsLayout):
     self._software_group = PagesGroup([
       page_button("updates &\nbranch", "icons_mici/settings/software.png", 64, 75, SoftwareLayoutMici()),
       page_button(tr("models"), f"{SP_ICONS}/offroad/icon_models.png", ICON_SIZE, ICON_SIZE, ModelsLayoutMici()),
+      page_button("Dropbox backup", "icons_mici/settings/software.png", 64, 75, DropboxLayout()),
       page_button(tr("sunnylink"), f"{SP_ICONS}/icons_mici/sunnylink.png", 76, 44, SunnylinkLayoutMici()),
     ])
     self._device_group = PagesGroup([

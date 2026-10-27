@@ -65,3 +65,41 @@ sections:
   - key: LanguageSetting
     widget: info
     title: Language
+
+- id: dropbox_archive
+  title: Dropbox Backup
+  description: Link Dropbox on the comma under Software. Backups are independent of comma and Sunnylink uploads. Local recordings may expire before backup if storage fills.
+  items:
+  - key: ArchiveEnabled
+    widget: toggle
+    title: Enable Dropbox Backup
+  - key: ArchiveNetwork
+    widget: option
+    title: Upload Network
+    options:
+    - value: 0
+      label: Unmetered Wi-Fi Only
+    - value: 1
+      label: Any Unmetered Connection
+    - value: 2
+      label: Allow Metered Connections
+  - key: ArchiveOnroad
+    widget: toggle
+    title: Upload While Driving
+    description: Off by default. Enabling may use network and device resources during a drive.
+  - key: ArchiveLogs
+    widget: toggle
+    title: Back Up Full and Quick Logs
+  - key: ArchiveRoad
+    widget: toggle
+    title: Back Up Road Camera Videos
+  - key: ArchivePreview
+    widget: toggle
+    title: Back Up Low Resolution Video
+  - key: ArchiveCabin
+    widget: toggle
+    title: Back Up Recorded Cabin Video
+    description: Only uploads cabin video that was already recorded. Does not enable cabin recording.
+  - key: ArchiveStatus
+    widget: info
+    title: Dropbox Backup Status
