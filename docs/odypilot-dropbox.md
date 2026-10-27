@@ -1,8 +1,9 @@
-# Dropbox recording archives (sp-ody-dropbox)
+# Dropbox recording archives
 
 Experimental implementation based on sp-ody `609bc7778`. Backups are **off by
 default**. No Dropbox app, account connection, or live upload was created during
-development. The stable `sp-ody` branch is unchanged.
+development. This feature is included in `sp-ody` and was developed on
+`sp-ody-dropbox`.
 
 ## Setup on the comma four
 
