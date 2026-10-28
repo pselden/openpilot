@@ -72,13 +72,13 @@ class DropboxProvider:
     revision = metadata.get('rev')
     if (metadata.get('size') != recording.size or not isinstance(remote_hash, str) or
         not hmac.compare_digest(remote_hash, digest) or not isinstance(revision, str) or
-        metadata.get('path_lower') != recording.key.lower()):
+        metadata.get('path_lower') != recording.remote_path.lower()):
       raise ArchiveError('Dropbox did not confirm the complete recording')
     return Receipt(revision, digest)
 
   def existing(self, recording: Recording, digest: str) -> Receipt | None:
     try:
-      metadata = self.request('files/get_metadata', {'path': recording.key})
+      metadata = self.request('files/get_metadata', {'path': recording.remote_path})
     except DropboxError as error:
       if error.status == 409 and isinstance(error.error, dict) and error.error.get('.tag') == 'path':
         path = error.error.get('path')
@@ -149,7 +149,7 @@ class DropboxProvider:
       try:
         result = self.request('files/upload_session/finish', {
           'cursor': {'session_id': checkpoint.session, 'offset': checkpoint.offset},
-          'commit': {'path': recording.key, 'mode': 'overwrite', 'autorename': False, 'mute': True}}, b'')
+          'commit': {'path': recording.remote_path, 'mode': 'overwrite', 'autorename': False, 'mute': True}}, b'')
       except DropboxError as error:
         if error.status == 409:
           save(Checkpoint())

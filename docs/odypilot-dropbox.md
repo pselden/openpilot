@@ -45,13 +45,29 @@ branch updates preserve state. A data reset can remove it and require linking
 again. Queues are scoped by Dropbox account and app key, so linking a different
 account cannot reuse the first account's upload receipts/sessions.
 
-Within the Dropbox application folder, files are stored as:
+Within the Dropbox application folder, new uploads use readable UTC names:
 
 ```
-/<DongleId>/<route>--<segment>/rlog.zst
-/<DongleId>/<route>--<segment>/fcamera.hevc
-/<DongleId>/<route>--<segment>/ecamera.hevc
+/<DongleId>/2026-10-28_12-00-00_UTC--drive-<route>/
+  2026-10-28_12-01-00_UTC--segment-0001/
+    2026-10-28_12-01-00_UTC--full-log.zst
+    2026-10-28_12-01-00_UTC--road-main.hevc
+    2026-10-28_12-01-00_UTC--road-wide.hevc
 ```
+
+Drive time comes from the log's `initData.wallTimeNanos`. Segment time adds the
+opening sentinel's monotonic elapsed time. The source timezone is not recorded;
+UTC avoids local timezone guesses and daylight-saving ambiguity. Route IDs and
+padded segment numbers prevent collisions. Cabin and preview files have explicit
+labels, as do full and quick logs. The original extensions and contents remain.
+If the log header is missing or corrupt, folders say `undated` / `time-unavailable`
+and file names label the filesystem timestamp as `saved-at`.
+
+The journal keeps source identity separate from the Dropbox destination and pins
+that destination once discovered. A rescan or missing log header cannot create
+another copy or restart a completed backup. Existing destinations are preserved
+by default. Any renaming of old cloud copies is a separate one-time operation;
+the normal worker never renames or reorganizes existing Dropbox files.
 
 Only regular, unlocked recordings from the internal log root are eligible.
 A new connection backfills eligible recordings still present locally. Remote
@@ -71,9 +87,10 @@ manually deleted Dropbox copies are not automatically checked again once marked 
   checkpoints resume on the next allowed connection. Disabled backups run no worker.
 - Network loss, drive starts, policy changes, file changes, auth failure, rate
   limits and remote verification failures must not mark a recording backed up.
-- No real Dropbox app/account is configured yet. Unit tests simulate only the HTTP
-  boundary and use actual files, SQLite, PKCE, hashes and requests.Response objects.
-  Live OAuth/upload, on-device operation and hosted Sunnylink UI remain unverified.
+- Unit tests simulate only the HTTP boundary and use actual files, SQLite, PKCE,
+  hashes and requests.Response objects. Live OAuth and a completed, hash-verified
+  upload were confirmed on the owner's parked device. Hosted Sunnylink UI remains
+  unverified.
 
 References: [Dropbox OAuth](https://docs.dropboxapi.com/dropbox-api/docs/get-started/authorization),
 [upload sessions](https://docs.dropboxapi.com/dropbox-api/api-reference/user-endpoints/files/upload-session-start).

@@ -3,15 +3,21 @@ import hashlib
 import io
 import json
 import stat
+import sqlite3
+from dataclasses import replace
 from urllib.parse import parse_qs, urlparse
 
 import pytest
 import requests
+import zstandard as zstd
+
+from openpilot.cereal import log
 
 from openpilot.sunnypilot.archive import dropbox
 from openpilot.sunnypilot.archive.auth import CredentialStore, Credentials, begin_link, disconnect, finish_link
 from openpilot.sunnypilot.archive.core import ArchiveError, ArchivePolicy, Checkpoint, Journal, Paused, content_hash, recordings
 from openpilot.sunnypilot.archive.dropbox import DropboxError, DropboxProvider
+from openpilot.sunnypilot.archive.naming import destination
 
 
 @pytest.fixture
@@ -78,6 +84,65 @@ def test_modified_file_requires_new_upload(recording, tmp_path):
   changed = next(recordings(recording.path.parent.parent, 'device1', ArchivePolicy()))
   journal.discover('a', iter([changed]))
   assert journal.next('a', {'rlog.zst'}) == (changed, Checkpoint())
+  journal.close()
+
+
+@pytest.mark.parametrize('name', ['qlog.zst', 'rlog.zst', 'qlog'])
+def test_readable_names_use_route_and_segment_recording_times(tmp_path, name):
+  route_time = 1793188800_000000000  # 2026-10-28 12:00:00 UTC
+  init = log.Event.new_message(logMonoTime=1000)
+  init.init('initData').wallTimeNanos = route_time
+  start = log.Event.new_message(logMonoTime=60_000001000)
+  start.init('sentinel').type = 'startOfSegment'
+  directory = tmp_path / '00000001--abcdef--12'
+  directory.mkdir()
+  data = init.to_bytes() + start.to_bytes()
+  (directory / name).write_bytes(zstd.compress(data) if name.endswith('.zst') else data)
+  path = directory / 'ecamera.hevc'
+  expected = ('/device/2026-10-28_12-00-00_UTC--drive-00000001--abcdef/' +
+              '2026-10-28_12-01-00_UTC--segment-0012/2026-10-28_12-01-00_UTC--road-wide.hevc')
+  assert destination(path, 'device', 0) == expected
+
+
+def test_missing_or_corrupt_time_is_explicit_and_does_not_guess_recording_start(recording):
+  target = recording.remote_path
+  assert '/undated-drive--00000001--abcdef/segment-0000--time-unavailable/' in target
+  assert target.endswith('--saved-at--full-log.zst')
+
+
+def test_destination_stays_pinned_when_discovery_metadata_changes(recording, tmp_path):
+  journal = Journal(tmp_path / 'queue.sqlite')
+  journal.discover('a', iter([recording]))
+  journal.checkpoint('a', recording.key, Checkpoint('session', 4, 123))
+  journal.discover('a', iter([replace(recording, destination='/newly-available-metadata/full-log.zst')]))
+  selected, checkpoint = journal.next('a', {'rlog.zst'})
+  assert selected.remote_path == recording.remote_path
+  assert checkpoint == Checkpoint('session', 4, 123)
+  journal.complete('a', recording.key, dropbox.Receipt('rev', 'digest'))
+  journal.discover('a', iter([replace(recording, destination='/another-name/full-log.zst')]))
+  assert journal.counts('a') == {'done': 1}
+  journal.close()
+
+
+def test_older_journal_preserves_completed_files_and_pending_sessions(recording, tmp_path):
+  path = tmp_path / 'old.sqlite'
+  db = sqlite3.connect(path)
+  db.execute("""CREATE TABLE uploads (provider TEXT,key TEXT,path TEXT,stamp TEXT,size INTEGER,
+    status TEXT DEFAULT 'pending',session TEXT DEFAULT '',offset INTEGER DEFAULT 0,created REAL DEFAULT 0,
+    revision TEXT DEFAULT '',digest TEXT DEFAULT '',PRIMARY KEY(provider,key))""")
+  for provider, status in [('pending-account', 'pending'), ('done-account', 'done')]:
+    db.execute("INSERT INTO uploads(provider,key,path,stamp,size,status,session,offset,created) VALUES(?,?,?,?,?,?,?,?,?)",
+               (provider, recording.key, str(recording.path), recording.stamp, recording.size, status, 'session', 4, 123))
+  db.commit()
+  db.close()
+  journal = Journal(path)
+  for provider in ('pending-account', 'done-account'):
+    journal.discover(provider, iter([recording]))
+  selected, checkpoint = journal.next('pending-account', {'rlog.zst'})
+  assert selected.remote_path == recording.key
+  assert checkpoint == Checkpoint('session', 4, 123)
+  assert journal.next('done-account', {'rlog.zst'}) is None
+  assert journal.counts('done-account') == {'done': 1}
   journal.close()
 
 

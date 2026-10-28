@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import BinaryIO, Protocol
 
+from openpilot.sunnypilot.archive.naming import destination
+
 
 class ArchiveError(Exception):
   """A safe, user-visible message, without HTTP bodies, URLs, or credentials."""
@@ -35,6 +37,11 @@ class Recording:
   key: str
   size: int
   stamp: str
+  destination: str = ''
+
+  @property
+  def remote_path(self) -> str:
+    return self.destination or self.key
 
   @staticmethod
   def fingerprint(stat: os.stat_result) -> str:
@@ -100,7 +107,8 @@ def recordings(root: Path, device: str, policy: ArchivePolicy) -> Iterator[Recor
       for path in sorted(files):
         if path.name in policy.filenames() and not path.is_symlink() and path.is_file():
           stat = path.stat()
-          yield Recording(path, f"/{device}/{segment.name}/{path.name}", stat.st_size, Recording.fingerprint(stat))
+          yield Recording(path, f"/{device}/{segment.name}/{path.name}", stat.st_size, Recording.fingerprint(stat),
+                          destination(path, device, stat.st_mtime_ns))
     except FileNotFoundError:  # normal disk-pressure cleanup can race discovery
       continue
 
@@ -125,20 +133,23 @@ class Journal:
       status TEXT DEFAULT 'pending', session TEXT DEFAULT '', offset INTEGER DEFAULT 0,
       created REAL DEFAULT 0, revision TEXT DEFAULT '', digest TEXT DEFAULT '',
       PRIMARY KEY(provider, key))""")
+    if 'destination' not in {row[1] for row in self.db.execute('PRAGMA table_info(uploads)')}:
+      self.db.execute("ALTER TABLE uploads ADD COLUMN destination TEXT NOT NULL DEFAULT ''")
     self.db.commit()
 
   def discover(self, provider: str, items: Iterator[Recording]) -> None:
     with self.db:
       for item in items:
-        self.db.execute("""INSERT INTO uploads(provider,key,path,stamp,size) VALUES(?,?,?,?,?)
+        self.db.execute("""INSERT INTO uploads(provider,key,path,stamp,size,destination) VALUES(?,?,?,?,?,?)
           ON CONFLICT(provider,key) DO UPDATE SET path=excluded.path, stamp=excluded.stamp,
-          size=excluded.size,status='pending',session='',offset=0,created=0,revision='',digest=''
-          WHERE uploads.stamp != excluded.stamp""", (provider, item.key, str(item.path), item.stamp, item.size))
+          size=excluded.size,destination=excluded.destination,status='pending',session='',offset=0,created=0,revision='',digest=''
+          WHERE uploads.stamp != excluded.stamp""", (provider, item.key, str(item.path), item.stamp, item.size, item.remote_path))
 
   def next(self, provider: str, filenames: set[str]) -> tuple[Recording, Checkpoint] | None:
-    for key, path, stamp, size, session, offset, created in self.db.execute(
-        "SELECT key,path,stamp,size,session,offset,created FROM uploads WHERE provider=? AND status='pending' ORDER BY key", (provider,)):
-      item = Recording(Path(path), key, size, stamp)
+    for key, path, stamp, size, session, offset, created, remote in self.db.execute(
+        """SELECT key,path,stamp,size,session,offset,created,destination FROM uploads
+        WHERE provider=? AND status='pending' ORDER BY COALESCE(NULLIF(destination,''),key)""", (provider,)):
+      item = Recording(Path(path), key, size, stamp, remote)
       try:
         valid = item.unchanged()
       except FileNotFoundError:
