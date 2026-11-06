@@ -1,22 +1,31 @@
 """RehkopfPilot: lead departure chime. It must still chime when the lead really pulls away while we sit stopped, and
 must not chime on the two things that set it off falsely in the week of 2026-10-27 (routes 3d, 3e): the vision lead
 distance jumping ~1.2 m with nobody moving, and stop-and-go traffic creeping ~2 m and stopping again."""
-from types import SimpleNamespace as NS
-
 import pytest
 
+from opendbc.car import structs
+from openpilot.cereal import log
+from openpilot.common.params import Params
 from openpilot.common.realtime import DT_MDL
 import openpilot.sunnypilot.selfdrive.controls.lib.e2e_alerts_helper as e2e
 from openpilot.sunnypilot.selfdrive.controls.lib.e2e_alerts_helper import E2EAlertsHelper
 from openpilot.sunnypilot.selfdrive.selfdrived.events import EventsSP
 
 
+@pytest.fixture(autouse=True)
+def alert_preferences(tmp_path, monkeypatch):
+  monkeypatch.setenv("PARAMS_ROOT", str(tmp_path))
+  params = Params()
+  params.put_bool("LeadDepartAlert", True, block=True)
+  params.put_bool("GreenLightAlert", True, block=True)
+
+
 def sm_frame(v_ego, d_rel):
   return {
-    'carState': NS(standstill=v_ego < 0.01, vEgo=v_ego, gasPressed=False),
-    'carControl': NS(enabled=False),
-    'modelV2': NS(position=NS(x=[0.0] * 33)),
-    'radarState': NS(leadOne=NS(present=d_rel is not None, dRel=d_rel if d_rel is not None else 0.0)),
+    'carState': structs.CarState(standstill=v_ego < 0.01, vEgo=v_ego, gasPressed=False),
+    'carControl': structs.CarControl(enabled=False),
+    'modelV2': log.ModelDataV2.new_message(position={'x': [0.0] * 33}),
+    'radarState': log.RadarState.new_message(leadOne={'present': d_rel is not None, 'dRel': d_rel if d_rel is not None else 0.0}),
   }
 
 
@@ -24,9 +33,6 @@ def run(lead_after_stop, gap=3.0):
   """Drive 2 s, stop 3 s behind a lead gap m ahead (arms the alert), then the lead follows lead_after_stop(t).
   Returns how many times the lead departure chime fired."""
   h = E2EAlertsHelper()
-  h._read_params = lambda: None
-  h.lead_depart_alert_enabled = True
-  h.green_light_alert_enabled = True
   chimes = 0
   frames = [(5.0, 20.0)] * int(2 / DT_MDL) + [(0.0, gap)] * int(3 / DT_MDL)
   frames += [(0.0, lead_after_stop(i * DT_MDL)) for i in range(int(6 / DT_MDL))]

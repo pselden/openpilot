@@ -19,6 +19,8 @@ instrument-cluster changes, separate from the comma display. The vehicle-code pi
 uses [pselden/opendbc](https://github.com/pselden/opendbc/tree/codex-odyssey-response-fixes),
 based on Patrick's existing Odyssey tune, with the HUD changes and selected
 brikowski gas/brake response fixes. See [the October 26 update](docs/odypilot-20261026.md).
+The [November 6 update](docs/odypilot-20261106.md) adds corrected steering learning,
+the next stable Odyssey response fixes, and a quieter lead-departure chime.
 
 The application animation updates with the branch. Optional early-boot helper
 code is included for completeness but is not installed or run automatically; see
