@@ -49,7 +49,7 @@ step services python "$CHECKS/svcscan.py" "$ROOT"
 step lint ruff check openpilot/selfdrive openpilot/sunnypilot openpilot/system openpilot/common tools/ody
 if [ "$QUICK" = 1 ]; then
   step app_tests python -m pytest -q \
-    openpilot/common/tests/test_forks.py openpilot/common/tests/test_settings_profile.py \
+    openpilot/common/tests/test_forks.py openpilot/common/tests/test_settings_profile.py openpilot/common/tests/test_whats_new.py \
     openpilot/selfdrive/controls/tests/test_accel_boost.py openpilot/selfdrive/controls/tests/test_cruise_accel.py \
     openpilot/selfdrive/controls/tests/test_launch_boost.py openpilot/selfdrive/controls/tests/test_turn_intent.py \
     openpilot/selfdrive/locationd/test/test_torqued_odyssey.py openpilot/selfdrive/selfdrived/tests \

@@ -3,6 +3,7 @@ import re
 
 from openpilot.common.basedir import BASEDIR
 from openpilot.common.build_name import get_build_name
+from openpilot.common.swaglog import cloudlog
 
 RELEASE_NOTES_PATH = os.path.join(BASEDIR, "RELEASE_NOTES.md")
 SEEN_KEY = "WhatsNewSeenBuild"
@@ -30,9 +31,14 @@ def whats_new_text(name: str, path: str = RELEASE_NOTES_PATH) -> str:
 
 def show_whats_new(params, set_alert, name: str | None = None, path: str = RELEASE_NOTES_PATH) -> bool:
   """Once per codename, raise the what's-new card. It clears itself on the next drive (CLEAR_ON_ONROAD_TRANSITION)."""
-  name = name if name is not None else get_build_name()
-  if not name or params.get(SEEN_KEY) == name:
+  try:
+    name = name if name is not None else get_build_name()
+    if not name or params.get(SEEN_KEY) == name:
+      return False
+    set_alert(ALERT_KEY, True, whats_new_text(name, path))
+    params.put(SEEN_KEY, name, block=True)
+    return True
+  except Exception:
+    # Release notes are optional; notification failures must not prevent manager startup.
+    cloudlog.exception("failed to show release notes")
     return False
-  set_alert(ALERT_KEY, True, whats_new_text(name, path))
-  params.put(SEEN_KEY, name, block=True)
-  return True

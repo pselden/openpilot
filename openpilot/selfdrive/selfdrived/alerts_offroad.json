@@ -1,4 +1,10 @@
 {
+  "Offroad_WhatsNew": {
+    "text": "%1",
+    "severity": 0,
+    "icon": "icons_mici/offroad_alerts/green_wheel.png",
+    "_comment": "OdyPilot release notes for the installed build; extra is the text"
+  },
   "Offroad_TemperatureTooHigh": {
     "text": "Device temperature too high. System cooling down before starting. Current internal component temperature: %1",
     "severity": 0
