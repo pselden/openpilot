@@ -1,22 +1,23 @@
 #!/usr/bin/env bash
-# Full PC build of a branch of this fork (Ubuntu 24.04 / WSL), then print the Odyssey tuning it builds.
-# usage: build_pc.sh [branch] [dir]     defaults: ody-next ~/odynext
-# First run takes a while (clone + ~900 MB of models from sunnypilot's Hugging Face store); rebuilds are ~1-2 min.
-set -e
-BRANCH=${1:-ody-next}
-DIR=${2:-$HOME/odynext}
-export PATH="$HOME/.local/bin:$PATH"
-command -v git-lfs >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq git-lfs; }
-git lfs install --skip-repo >/dev/null
-if [ ! -d "$DIR" ]; then
-  git clone --branch "$BRANCH" --recurse-submodules --jobs 8 https://github.com/prehkopf/openpilot.git "$DIR"
-fi
+# Build pselden/openpilot on Apple Silicon macOS or Linux. JOBS caps parallelism (default: up to 4).
+# usage: build_pc.sh [branch] [dir]   defaults: sp-ody-dev ~/odypilot-dev
+set -euo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
+BRANCH=${1:-sp-ody-dev}
+DIR=${2:-$HOME/odypilot-dev}
+command -v git-lfs >/dev/null || { echo 'Install git-lfs first (macOS: brew install git-lfs).' >&2; exit 1; }
+ody_checkout https://github.com/pselden/openpilot.git "$BRANCH" "$DIR"
 cd "$DIR"
-git fetch -q origin "$BRANCH" && git checkout -q -B "$BRANCH" "origin/$BRANCH"
-git submodule update --init --recursive --jobs 8
+git submodule sync --recursive
+git submodule update --init --recursive --jobs "$(ody_jobs)"
 git lfs pull
-echo "HEAD $(git log --oneline -1) | opendbc $(git -C opendbc_repo log --oneline -1)"
-[ -d .venv ] || tools/setup_dependencies.sh
-source .venv/bin/activate
-scons -j"$(nproc)" > "$DIR/scons.log" 2>&1 && echo "scons ok (t=${SECONDS}s)" || { tail -40 "$DIR/scons.log"; exit 1; }
+if [ ! -d "$DIR/.venv" ] && [ -z "${ODY_VENV:-}" ]; then
+  tools/setup_dependencies.sh
+fi
+ody_activate "$DIR"
+echo "HEAD $(git rev-parse HEAD) | opendbc $(git -C opendbc_repo rev-parse HEAD)"
+if ! scons -j"$(ody_jobs)" > "$DIR/scons.log" 2>&1; then
+  tail -40 "$DIR/scons.log"
+  exit 1
+fi
 python tools/ody/check_params.py

@@ -2,6 +2,7 @@
 # Replay card + controlsd from this checkout on recorded Odyssey segments and sanity-check the outputs.
 # usage: replay_segments.py <segment dir or rlog.zst> [...]
 #   e.g. replay_segments.py ~/rlogs/00000008--83edc4fea4--10
+import math
 import os
 import sys
 import numpy as np
@@ -13,19 +14,47 @@ def rlog_path(arg):
   return os.path.join(arg, "rlog.zst") if os.path.isdir(arg) else arg
 
 
+def validate_replay(proc, messages) -> list[str]:
+  """Reject crashed/empty/incomplete process output before reporting a replay as passed."""
+  errors = []
+  kinds = {m.which() for m in messages}
+  required = {'carParams', 'carState', 'sendcan'} if proc == 'card' else {'carControl'}
+  if missing := required - kinds:
+    errors.append(f"missing output messages: {sorted(missing)}")
+  if not messages or not check_most_messages_valid(messages):
+    errors.append("not enough valid output messages")
+  for msg in messages:
+    if msg.which() == 'carControl':
+      if not all(math.isfinite(v) for v in (msg.carControl.actuators.accel, msg.carControl.actuators.torque)):
+        errors.append("nonfinite actuator output")
+        break
+  return errors
+
+
 def main(args):
   if not args:
     sys.exit("usage: replay_segments.py <segment dir or rlog.zst> [...]")
+  failed = False
   for seg in args:
     lr = list(LogReader(rlog_path(seg)))
     rec_cs = [m.carState for m in lr if m.which() == "carState"]
     rec_cc = [m.carControl for m in lr if m.which() == "carControl"]
+    if not rec_cs or not rec_cc:
+      print(f"FAIL {seg}: recording needs both carState and carControl")
+      failed = True
+      continue
     print(f"===== {seg}: {len(lr)} msgs, recorded carState {len(rec_cs)} =====")
     for proc in ("card", "controlsd"):
       try:
         out = replay_process_with_name(proc, lr, disable_progress=True)
       except Exception as e:
         print(f"  {proc}: CRASH {type(e).__name__}: {str(e)[:300]}")
+        failed = True
+        continue
+      errors = validate_replay(proc, out)
+      if errors:
+        print(f"  {proc}: FAIL {'; '.join(errors)}")
+        failed = True
         continue
       kinds = {}
       for m in out:
@@ -56,6 +85,8 @@ def main(args):
                 f"(recorded {rec_acc.min():.2f}..{rec_acc.max():.2f}); mean |accel - recorded| {np.abs(acc[:n] - rec_acc[:n]).mean():.3f}; " +
                 f"torque range {tq.min():.2f}..{tq.max():.2f}")
 
+  return int(failed)
+
 
 if __name__ == "__main__":
-  main(sys.argv[1:])
+  sys.exit(main(sys.argv[1:]))
