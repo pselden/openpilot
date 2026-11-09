@@ -71,6 +71,7 @@ struct SelfdriveStateSP @0x81c2f05a394cf4af {
   intelligentCruiseButtonManagement @1 :IntelligentCruiseButtonManagement;
   buttonsPressed @2 :UInt16;
   buttonsReleaseToggle @3 :UInt16;
+  wheelBookmarkCount @4 :UInt32;  # OdyPilot: double-taps of CANCEL this drive (UI publishes the bookmark)
 
   enum AudibleAlert {
     none @0;
@@ -112,6 +113,9 @@ struct SelfdriveStateSP @0x81c2f05a394cf4af {
 
     promptSingleLow @31;
     promptSingleHigh @32;
+
+    factoryModeOn @33;  # OdyPilot voice clips
+    factoryModeOff @34;
   }
 }
 
@@ -215,10 +219,20 @@ struct LongitudinalPlanSP @0xf35cc4560bbf6ec2 {
     state @0 :DynamicExperimentalControlState;
     enabled @1 :Bool;
     active @2 :Bool;
+    reason @3 :DecReason;  # OdyPilot: why DEC chose blended; none while in acc
 
     enum DynamicExperimentalControlState {
       acc @0;
       blended @1;
+    }
+
+    enum DecReason {
+      none @0;
+      stopAhead @1;   # model trajectory ends well short of where it should at this speed (stop, light)
+      slowing @2;     # milder trajectory shortage
+      curve @3;       # shortage while the model path turns sharply
+      stopped @4;     # standstill
+      collision @5;   # MPC forward-collision warning
     }
   }
 
@@ -360,6 +374,9 @@ struct OnroadEventSP @0xda96579883444c35 {
     e2eChime @23;
     laneChangeRoadEdge @24;
     bigModelReady @25;
+    factoryModeOn @26;  # OdyPilot: switched to factory mode for the next start
+    factoryModeOff @27;  # OdyPilot: switched back to OdyPilot for the next start
+    factoryModeActive @28;  # OdyPilot: this drive is a stock car
   }
 }
 

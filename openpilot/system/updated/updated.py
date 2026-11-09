@@ -11,6 +11,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from openpilot.common.basedir import BASEDIR
+from openpilot.common.forks import fork_for_url
 from openpilot.common.params import Params
 from openpilot.common.time_helpers import system_time_valid
 from openpilot.common.markdown import parse_markdown
@@ -349,8 +350,23 @@ class Updater:
         remaining = max(HOURS_NO_CONNECTIVITY_MAX - dt_uptime_onroad, 1)
         set_offroad_alert("Offroad_ConnectivityNeededPrompt", True, extra_text=f"{remaining} hour{'' if remaining == 1 else 's'}.")
 
+  def apply_target_remote(self, path: str = OVERLAY_MERGED) -> None:
+    """OdyPilot: point origin at the fork picked in the branch switcher (UpdaterTargetRemote) before listing or
+    fetching. The finalized update carries the new origin, so later updates keep following that fork."""
+    url = self.params.get("UpdaterTargetRemote")
+    if not url:
+      return
+    if fork_for_url(url) is None:
+      cloudlog.error("update remote not in the branch switcher's fork list, ignored")
+      return
+    current = run(["git", "remote", "get-url", "origin"], path).strip()
+    if current != url:
+      cloudlog.warning(f"update remote {current} -> {url}")
+      run(["git", "remote", "set-url", "origin", url], path)
+
   def check_for_update(self) -> None:
     cloudlog.info("checking for updates")
+    self.apply_target_remote()
 
     excluded_branches = ('release2', 'release2-staging')
 
@@ -380,6 +396,7 @@ class Updater:
       cloudlog.info(f"up to date on {cur_branch} ({str(cur_commit)[:7]})")
 
   def fetch_update(self) -> None:
+    self.apply_target_remote()
     cloudlog.info("attempting git fetch inside staging overlay")
 
     self.params.put("UpdaterState", "downloading...", block=True)

@@ -2,11 +2,12 @@
 import math
 import os
 
-from openpilot.cereal import log
+from openpilot.cereal import custom, log
 from opendbc.car.structs import car
 import openpilot.cereal.messaging as messaging
 from openpilot.common.constants import CV
-from openpilot.common.git import get_short_branch
+from openpilot.common.build_name import build_label
+from openpilot.common.git import get_commit, get_short_branch
 from openpilot.common.realtime import DT_CTRL
 from openpilot.selfdrive.locationd.calibrationd import MIN_SPEED_FILTER
 from openpilot.common.hardware import HARDWARE
@@ -20,6 +21,7 @@ AlertSize = log.SelfdriveState.AlertSize
 AlertStatus = log.SelfdriveState.AlertStatus
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 AudibleAlert = log.SelfdriveState.AudibleAlert
+AudibleAlertSP = custom.SelfdriveStateSP.AudibleAlert
 EventName = log.OnroadEvent.EventName
 
 
@@ -71,8 +73,9 @@ def startup_master_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubM
   branch = get_short_branch()  # Ensure get_short_branch is cached to avoid lags on startup
   if "REPLAY" in os.environ:
     branch = "replay"
+  build = f"{branch} • {build_label(get_commit())}" if get_commit() else branch
 
-  return StartupAlert("buymeacoffee.com/mvlboston", branch, alert_status=AlertStatus.userPrompt)
+  return StartupAlert("OdyPilot", build, alert_status=AlertStatus.userPrompt)
 
 def below_engage_speed_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubMaster, metric: bool, soft_disable_time: int, personality) -> Alert:
   return NoEntryAlert(f"Drive above {get_display_speed(CP.minEnableSpeed, metric)} to engage")
@@ -830,12 +833,15 @@ EVENTS: dict[int, dict[str, Alert | AlertCallbackType]] = {
     ET.WARNING: personality_changed_alert,
   },
 
+  # OdyPilot: chime so a steering-wheel bookmark (double-tap CANCEL) is confirmed by ear
   EventName.userBookmark: {
-    ET.PERMANENT: NormalPermanentAlert("Bookmark Saved", duration=1.5),
+    ET.PERMANENT: Alert("Bookmark Saved", "", AlertStatus.normal, AlertSize.small,
+                        Priority.LOWER, VisualAlert.none, AudibleAlertSP.promptSingleHigh, 1.5),
   },
 
   EventName.userBookmarkNotPaired: {
-    ET.PERMANENT: NormalPermanentAlert("Bookmark Saved", "pair to connect\nto view", duration=1.5),
+    ET.PERMANENT: Alert("Bookmark Saved", "pair to connect\nto view", AlertStatus.normal, AlertSize.mid,
+                        Priority.LOWER, VisualAlert.none, AudibleAlertSP.promptSingleHigh, 1.5),
   },
 }
 

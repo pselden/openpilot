@@ -452,4 +452,23 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"TorqueParamsOverrideEnabled", {PERSISTENT | BACKUP, BOOL, "0"}},
     {"TorqueParamsOverrideFriction", {PERSISTENT | BACKUP, FLOAT, "0.1"}},
     {"TorqueParamsOverrideLatAccelFactor", {PERSISTENT | BACKUP, FLOAT, "2.5"}},
+    // OdyPilot application and vehicle preferences.
+    {"SettingsProfileApplied", {PERSISTENT, STRING}},
+    {"WhatsNewSeenBuild", {PERSISTENT, STRING}},
+    {"UpdaterTargetRemote", {PERSISTENT, STRING}},  // OdyPilot: fork URL picked in the branch switcher  // OdyPilot: codename whose what's-new card was last shown  // OdyPilot settings_profile.json version last applied
+    {"MapboxToken", {PERSISTENT, STRING}},
+    {"NavFavorites", {PERSISTENT, JSON}},
+    {"Offroad_WhatsNew", {CLEAR_ON_ONROAD_TRANSITION, JSON}},  // OdyPilot: shown after an update until the next drive
+    {"OdysseyLoadPreset", {PERSISTENT, INT, "0"}},  // 0 empty, 1 family, 2 family + luggage; read by the Honda car controller
+    {"FactoryMode", {PERSISTENT, BOOL, "0"}},  // OdyPilot: next drive starts as a stock car (hold CANCEL 3 s in Park); no BACKUP so a restore can't flip it
+    {"ArchiveEnabled", {PERSISTENT | BACKUP, BOOL, "0"}},
+    {"ArchiveOnroad", {PERSISTENT | BACKUP, BOOL, "0"}},
+    {"ArchiveNetwork", {PERSISTENT | BACKUP, INT, "0"}},
+    {"ArchiveLogs", {PERSISTENT | BACKUP, BOOL, "1"}},
+    {"ArchiveRoad", {PERSISTENT | BACKUP, BOOL, "1"}},
+    {"ArchivePreview", {PERSISTENT | BACKUP, BOOL, "0"}},
+    {"ArchiveCabin", {PERSISTENT | BACKUP, BOOL, "0"}},
+    {"ArchiveStatus", {CLEAR_ON_MANAGER_START, STRING}},
+    {"ModelManager_DefaultChestnutOnnxHash", {PERSISTENT, STRING}},
+    {"DynamicExperimentalControl", {PERSISTENT | BACKUP, BOOL, "0"}},
 };
