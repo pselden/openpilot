@@ -37,6 +37,22 @@ class ExperimentalModeConfirmPage(NavScroller):
     ])
 
 
+def request_experimental_mode(state: bool, on_changed: Callable[[bool], None]) -> None:
+  """Use the same confirmation and saved state from every settings entry point."""
+  if state and not ui_state.params.get_bool("ExperimentalModeConfirmed"):
+    on_changed(False)
+
+    def on_confirm():
+      ui_state.params.put_bool("ExperimentalModeConfirmed", True, block=True)
+      ui_state.params.put_bool("ExperimentalMode", True, block=True)
+      on_changed(True)
+
+    gui_app.push_widget(ExperimentalModeConfirmPage(on_confirm))
+  else:
+    ui_state.params.put_bool("ExperimentalMode", state, block=True)
+    on_changed(state)
+
+
 class TogglesLayoutMici(NavScroller):
   def __init__(self):
     super().__init__()
@@ -141,15 +157,4 @@ class TogglesLayoutMici(NavScroller):
       item.set_checked(ui_state.params.get_bool(key))
 
   def _on_experimental_mode(self, state: bool):
-    if state and not ui_state.params.get_bool("ExperimentalModeConfirmed"):
-      # Don't show enabled state until confirm
-      self._experimental_btn.set_checked(False)
-
-      def on_confirm():
-        ui_state.params.put_bool("ExperimentalModeConfirmed", True, block=True)
-        ui_state.params.put_bool("ExperimentalMode", True, block=True)
-        self._experimental_btn.set_checked(True)
-
-      gui_app.push_widget(ExperimentalModeConfirmPage(on_confirm))
-    else:
-      ui_state.params.put_bool("ExperimentalMode", state, block=True)
+    request_experimental_mode(state, self._experimental_btn.set_checked)

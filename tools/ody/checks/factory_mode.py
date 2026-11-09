@@ -3,7 +3,7 @@
 # twice. With FactoryMode=0 card must take control (not passive, Honda safety, sends CAN), which proves the replay
 # reaches the point where the radar is silenced. With FactoryMode=1 card must be passive, in noOutput safety (so the
 # harness relay stays with the stock camera), and send nothing at all: no radar silence, no steering, no ACC.
-# Openpilot longitudinal stays set in both, so ExperimentalMode and DEC aren't cleared by a factory drive.
+# Openpilot longitudinal stays set in both, so ExperimentalMode isn't cleared by a factory drive.
 # usage: factory_mode.py <segment dir or rlog.zst>
 import os
 import sys
@@ -43,7 +43,7 @@ def main(seg):
   if sent:
     fails.append(f"factory: card sent {sent} CAN messages (radar silence / controls), want 0")
   if not cp.openpilotLongitudinalControl:
-    fails.append("factory: openpilotLongitudinalControl cleared; selfdrived and the UI would delete ExperimentalMode/DEC")
+    fails.append("factory: openpilotLongitudinalControl cleared; selfdrived and the UI would delete ExperimentalMode")
 
   for f in fails:
     print(f"  FAIL {f}")

@@ -5,8 +5,8 @@ no-output safety, so the harness relay hands the car back to the stock camera, a
 so stock ACC, LKAS and collision mitigation work. The switch only takes effect at the next start because the radar
 is silenced once per ignition cycle and can't be woken cleanly mid-drive.
 
-openpilotLongitudinalControl stays set in factory mode, so selfdrived and the UI don't clear ExperimentalMode or
-DynamicExperimentalControl, and OdyPilot comes back with the same settings.
+openpilotLongitudinalControl stays set in factory mode, so selfdrived and the UI don't clear ExperimentalMode,
+and OdyPilot comes back with the same settings.
 """
 from opendbc.car.structs import car
 

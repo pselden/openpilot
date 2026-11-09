@@ -8,9 +8,10 @@ to Patrick, brikowski, MVL, sunnypilot, and comma.ai.
 
 Install: `installer.comma.ai/pselden/sp-ody`.
 
-The separate [`codex-ody-mvl-20261108` integration branch](docs/odypilot-mvl-20261108.md)
+The separate [`sp-ody-dev` integration branch](docs/odypilot-mvl-20261108.md)
 combines current MVL/sunnypilot with the Odyssey overlay and a 4096 steering
 ceiling. See its range audit and validation limits before testing it.
+Development install: `installer.comma.ai/pselden/sp-ody-dev`.
 
 **Dropbox prototype:** `sp-ody` includes opt-in recording archives, resumable
 Dropbox uploads, on-device account linking, and Sunnylink settings. Backups are
@@ -19,12 +20,14 @@ off by default and live Dropbox/device validation is pending. See
 
 MVL's Honda cluster HUD changes retain a valid previous set speed while ACC is off
 and show MADS armed/lateral-active states through the lane indicators. These are
-instrument-cluster changes, separate from the comma display. The vehicle-code pin
+instrument-cluster changes, separate from the comma display. The stable release's vehicle-code pin
 uses [pselden/opendbc](https://github.com/pselden/opendbc/tree/codex-odyssey-response-fixes),
 based on Patrick's existing Odyssey tune, with the HUD changes and selected
 brikowski gas/brake response fixes. See [the October 26 update](docs/odypilot-20261026.md).
 The [November 6 update](docs/odypilot-20261106.md) adds corrected steering learning,
 the next stable Odyssey response fixes, and a quieter lead-departure chime.
+The development branch instead pins [pselden/opendbc:sp-ody-dev](https://github.com/pselden/opendbc/tree/sp-ody-dev),
+which carries the matching MVL4096 vehicle integration.
 
 The application animation updates with the branch. Optional early-boot helper
 code is included for completeness but is not installed or run automatically; see

@@ -23,12 +23,12 @@ def test_repo_profile_is_valid():
 
 
 def test_applies_once_then_stays_out_of_the_way(tmp_path):
-  path = write_profile(tmp_path, {"DynamicExperimentalControl": True, "LongitudinalPersonality": 0, "DisableUpdates": False})
+  path = write_profile(tmp_path, {"ExperimentalMode": True, "LongitudinalPersonality": 0, "DisableUpdates": False})
   with OpenpilotPrefix():
     p = Params()
     p.put_bool("DisableUpdates", True)  # e.g. what a sunnylink restore left behind
-    assert set(apply_settings_profile(p, path=path)) == {"DynamicExperimentalControl", "LongitudinalPersonality", "DisableUpdates"}
-    assert p.get_bool("DynamicExperimentalControl") and p.get("LongitudinalPersonality") == 0 and not p.get_bool("DisableUpdates")
+    assert set(apply_settings_profile(p, path=path)) == {"ExperimentalMode", "LongitudinalPersonality", "DisableUpdates"}
+    assert p.get_bool("ExperimentalMode") and p.get("LongitudinalPersonality") == 0 and not p.get_bool("DisableUpdates")
     assert p.get(APPLIED_KEY) == "1"
     # the driver changes something afterwards: a reboot (same version) leaves it alone
     p.put("LongitudinalPersonality", 2, block=True)

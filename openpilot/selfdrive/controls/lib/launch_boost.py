@@ -5,8 +5,8 @@ be past LAUNCH_DISARM_SPEED by LAUNCH_COMMIT_T, skip ahead to the part of its pl
 take that acceleration instead, capped at LAUNCH_MAX_ACCEL and fading out by LAUNCH_DISARM_SPEED. It only ever raises
 the model (e2e) candidate; the planner still takes the minimum with the lead-following MPC and cruise targets.
 
-Differences from comma's version: gated on the DEC-aware is_e2e (DEC hands the model control at a stop), and the
-model plan is interpolated here because this planner does not parse it.
+The helper follows the manual Experimental Mode switch. The model plan is interpolated here because this planner
+does not parse it.
 On the 2026-10 Odyssey drives the plan asked 0.13-0.29 m/s^2 in the second before moving; this asks 1.44-1.50.
 """
 import numpy as np

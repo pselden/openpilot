@@ -6,7 +6,8 @@ See the LICENSE.md file in the root directory for more details.
 """
 from openpilot.cereal import log
 from openpilot.selfdrive.ui.layouts.settings.common import restart_needed_callback
-from openpilot.selfdrive.ui.mici.widgets.button import BigButton, BigMultiParamToggle, BigParamControl
+from openpilot.selfdrive.ui.mici.widgets.button import BigButton, BigMultiParamToggle, BigParamControl, BigToggle
+from openpilot.selfdrive.ui.mici.layouts.settings.toggles import request_experimental_mode
 from openpilot.selfdrive.ui.sunnypilot.mici.widgets.destination import DestinationToggle
 from openpilot.selfdrive.ui.sunnypilot.mici.widgets.lane_change_mode import LaneChangeModeToggle
 from openpilot.selfdrive.ui.sunnypilot.mici.widgets.load_preset import LoadPresetToggle
@@ -62,7 +63,8 @@ class DrivingGroup(GroupLayout):
                                                         "Aggressive follows closer, with firmer gas and braking.\n" +
                                                         "Relaxed leaves more space.\n" +
                                                         "The steering wheel distance button changes it too.")
-    self._experimental = BigParamControl("experimental mode", "ExperimentalMode",
+    self._experimental = BigToggle("experimental mode", initial_state=ui_state.params.get_bool("ExperimentalMode"),
+                                         toggle_callback=lambda state: request_experimental_mode(state, self._experimental.set_checked),
                                          description_icon=gui_app.texture("icons_mici/experimental_mode.png", 64, 64),
                                          description="Let the driving model control gas and brakes.\n" +
                                                      "Includes stopping for red lights and stop signs.\n" +
@@ -101,6 +103,7 @@ class DrivingGroup(GroupLayout):
 
   def _refresh(self):
     super()._refresh()
+    self._experimental.set_checked(ui_state.params.get_bool("ExperimentalMode"))
     if ui_state.CP is not None:
       has_long = ui_state.has_longitudinal_control
       for item in (self._experimental, self._boost, self._personality):

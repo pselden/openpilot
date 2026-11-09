@@ -1,7 +1,8 @@
 # MVL4096 integration branch
 
-Branch: `codex-ody-mvl-20261108` in both `pselden/openpilot` and
+Branch: `sp-ody-dev` in both `pselden/openpilot` and
 `pselden/opendbc`. The published `sp-ody` release is unchanged.
+Development install: `installer.comma.ai/pselden/sp-ody-dev`.
 
 ## Integration bases
 
@@ -22,6 +23,22 @@ Odyssey response algorithms now live in `opendbc/car/honda/odyssey.py`, with
 explicit hooks in MVL's controller. Other Honda code stays on the MVL base.
 The driving page exposes Acceleration Boost instead of the retired DEC toggle.
 The settings-profile version stays at 1; this update does not force a reset.
+
+## DEC and Experimental Mode
+
+Upstream sunnypilot master `3d8f211d4` removed Dynamic Experimental Control
+(DEC) and always includes the model's longitudinal plan. MVL restored a manual
+Experimental Mode switch; this branch keeps that switch, with the same
+confirmation flow in the custom settings page and upstream settings page.
+Accepting confirmation also enables the onroad long-press shortcut.
+
+DEC is not part of this branch's control behavior. Its obsolete parameter,
+tests, status pills, and runtime readers are removed. Old stored DEC settings
+cannot enable it. The deprecated schema field remains reserved for old logs;
+it does not run a controller. Keep that distinction when importing Odyssey
+changes from Patrick: retain the vehicle fixes without restoring DEC or its
+mode-selection hooks. Experimental Mode, Blendful, and Acceleration Boost do
+not require DEC.
 
 ## Steering range audit
 

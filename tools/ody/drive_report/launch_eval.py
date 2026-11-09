@@ -1,5 +1,5 @@
 # Run the green-light launch module over whole recorded drives: where would it fire, how much would it ask for,
-# and was anything close in front when it did? (offline, from logged carState / modelV2 / plan / DEC state)
+# and was anything close in front when it did? (offline, from logged carState / modelV2 / plan / Experimental Mode)
 # usage: launch_eval.py <route prefix> [<route prefix> ...]
 import glob
 import sys
@@ -20,10 +20,7 @@ def read_seg(fn):
       if w == "carState":
         st["cs"] = (m.carState.standstill, m.carState.vEgo, m.carState.aEgo, m.carState.gasPressed)
       elif w == "selfdriveState":
-        st["exp"] = m.selfdriveState.experimentalMode
-      elif w == "longitudinalPlanSP":
-        dec = m.longitudinalPlanSP.dec
-        st["e2e"] = st.get("exp", False) and (not dec.active or str(dec.state) == "blended")
+        st["e2e"] = m.selfdriveState.experimentalMode
       elif w == "longitudinalPlan":
         st["plan_a"] = m.longitudinalPlan.aTarget
       elif w == "carControl":

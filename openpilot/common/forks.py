@@ -16,7 +16,7 @@ class Fork:
 # Pick the fork first, then the branch. The installed branch is always offered for the installed fork, and
 # "switch branch" still accepts any branch name on the target fork.
 FORKS = (
-  Fork("OdyPilot", "https://github.com/pselden/openpilot.git", ("sp-ody", "codex-ody-mvl-20261108", "ody-test")),
+  Fork("OdyPilot", "https://github.com/pselden/openpilot.git", ("sp-ody", "sp-ody-dev", "ody-test")),
   Fork("Patrick", "https://github.com/prehkopf/openpilot.git", ("ody-next", "ody-test")),
   Fork("MVL", "https://github.com/mvl-boston/openpilot.git", ("sp-honda-202607", "sp-honda-dev-202608")),
   Fork("brikowski", "https://github.com/brikowski/openpilot.git", ("ody-op", "ody-op-test")),

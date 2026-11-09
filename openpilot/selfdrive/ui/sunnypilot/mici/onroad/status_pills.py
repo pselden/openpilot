@@ -17,7 +17,6 @@ from openpilot.system.ui.widgets import Widget
 GREEN = rl.Color(51, 196, 92, 255)
 GREY = rl.Color(170, 170, 170, 255)
 ORANGE = rl.Color(255, 145, 40, 255)
-RED = rl.Color(255, 70, 60, 255)
 WHITE = rl.Color(255, 255, 255, 255)
 BLUE = rl.Color(110, 170, 255, 255)
 
@@ -27,14 +26,6 @@ PILL_H = 28
 MARGIN = 12
 GAP = 6
 
-# DEC's reason for blended mode (custom.capnp DynamicExperimentalControl.DecReason) -> pill
-REASONS = {
-  "stopAhead": ("STOP AHEAD", ORANGE),
-  "slowing": ("SLOWING", ORANGE),
-  "curve": ("CURVE", ORANGE),
-  "stopped": ("STOPPED", WHITE),
-  "collision": ("COLLISION", RED),
-}
 LOAD_PRESETS = {1: "FAMILY", 2: "LUGGAGE"}  # OdysseyLoadPreset (ody-test); Empty shows nothing
 M_TO_FT = 3.28084
 
@@ -43,10 +34,6 @@ M_TO_FT = 3.28084
 class PillInputs:
   op_long: bool
   experimental: bool = False
-  dec_enabled: bool = False
-  dec_active: bool = False
-  dec_blended: bool = False
-  dec_reason: str = "none"
   lead_dist: float | None = None  # m, None without a lead
   v_ego: float = 0.0              # m/s
   metric: bool = False
@@ -69,18 +56,12 @@ def pill_rows(p: PillInputs) -> list[list[tuple[str, rl.Color]]]:
   row1.append(("OP LONG", GREEN) if p.op_long else ("STOCK ACC", GREY))
   rows = [row1]
   if p.op_long and p.experimental:
-    if p.dec_enabled and p.dec_active:
-      row2 = [("DEC•EXP", ORANGE) if p.dec_blended else ("DEC•ACC", WHITE)]  # "•" is in the loaded glyph set, "·" is not
-      if p.dec_blended and p.dec_reason in REASONS:
-        row2.insert(0, REASONS[p.dec_reason])
-    else:
-      row2 = [("EXP", ORANGE)]
-    rows.append(row2)
+    rows.append([("EXP", ORANGE)])
   return rows
 
 
 class StatusPills(Widget):
-  """Tiny top-right pills: load preset, gap to the lead, who controls gas/brake, and what experimental/DEC is doing."""
+  """Tiny top-right pills: load preset, lead gap, gas/brake controller, and Experimental Mode."""
 
   def __init__(self):
     super().__init__()
@@ -101,7 +82,7 @@ class StatusPills(Widget):
         self._load_preset = 0
     self._frame += 1
 
-  def _current(self) -> list[list[tuple[str, rl.Color]]]:
+  def current_rows(self) -> list[list[tuple[str, rl.Color]]]:
     sm = ui_state.sm
     CP = ui_state.CP
     self._read_load_preset()
@@ -110,10 +91,6 @@ class StatusPills(Widget):
                    factory=bool(CP.passive) if CP is not None else False)
     if sm.recv_frame['selfdriveState'] >= ui_state.started_frame:
       p.experimental = sm['selfdriveState'].experimentalMode
-    if sm.recv_frame['longitudinalPlanSP'] >= ui_state.started_frame:
-      dec = sm['longitudinalPlanSP'].dec
-      p.dec_enabled, p.dec_active, p.dec_blended = dec.enabled, dec.active, dec.state.raw == 1  # 1 = blended
-      p.dec_reason = str(dec.reason)
     if sm.recv_frame['radarState'] >= ui_state.started_frame and sm['radarState'].leadOne.present:
       p.lead_dist = sm['radarState'].leadOne.dRel
     if sm.recv_frame['carState'] >= ui_state.started_frame:
@@ -124,7 +101,7 @@ class StatusPills(Widget):
     alpha = self._alpha.update(1.0 if (self._can_draw and ui_state.started) else 0.0)
     if alpha < 1e-2:
       return
-    self.draw_rows(rect, self._current(), alpha)
+    self.draw_rows(rect, self.current_rows(), alpha)
 
   def draw_rows(self, rect: rl.Rectangle, rows: list[list[tuple[str, rl.Color]]], alpha: float = 1.0) -> None:
     y = rect.y + MARGIN

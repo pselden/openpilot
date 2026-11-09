@@ -470,5 +470,4 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"ArchiveCabin", {PERSISTENT | BACKUP, BOOL, "0"}},
     {"ArchiveStatus", {CLEAR_ON_MANAGER_START, STRING}},
     {"ModelManager_DefaultChestnutOnnxHash", {PERSISTENT, STRING}},
-    {"DynamicExperimentalControl", {PERSISTENT | BACKUP, BOOL, "0"}},
 };

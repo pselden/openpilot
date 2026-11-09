@@ -77,11 +77,11 @@ def test_each_hold_switches_again():
 
 def test_toggle_round_trip_keeps_long_settings(tmp_path):
   p = Params(str(tmp_path))
-  for key in ("ExperimentalMode", "DynamicExperimentalControl", "AlphaLongitudinalEnabled"):
+  for key in ("ExperimentalMode", "AccelBoostSP", "AlphaLongitudinalEnabled"):
     p.put_bool(key, True, block=True)
   assert toggle_factory_mode(p) is True and factory_mode_enabled(p)
   assert toggle_factory_mode(p) is False and not factory_mode_enabled(p)
-  assert all(p.get_bool(key) for key in ("ExperimentalMode", "DynamicExperimentalControl", "AlphaLongitudinalEnabled"))
+  assert all(p.get_bool(key) for key in ("ExperimentalMode", "AccelBoostSP", "AlphaLongitudinalEnabled"))
 
 
 def test_alerts_and_voice_clips():
