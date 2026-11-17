@@ -74,6 +74,21 @@ should use the torque controller with manual overrides and NNLC off.
 
 ## Maintenance
 
+### Selected fixes, 2026-11-16
+
+- Adapt MVL app commit `2c863e8128c0396061bae97c8cbdb7e54dc4fea3`: restore
+  speed-dependent cruise acceleration limits when Experimental Mode is off.
+  Keep the existing lower-set-speed response fix and gradual acceleration
+  transitions. Experimental Mode retains its existing acceleration ceiling.
+- Port Brikowski app commit `a2c71a7a372b1313d061d22256e9c30c0a02a9f1`:
+  discard saved lateral delay when the Honda steering CAN route changes,
+  including switching Odyssey stock ACC/openpilot longitudinal control.
+  Preserve the cache when the route stays the same.
+
+These fixes use the existing opendbc pin and AGNOS 19.9. They do not import
+Brikowski's longitudinal tuning or restore DEC. The quick validation runner
+includes both the cruise acceleration and steering-delay cache regressions.
+
 Use MVL as the app and vehicle integration upstream. Keep personal vehicle
 behavior in the Odyssey module and small platform-specific hooks; carry app
 features independently of runtime updates. Record both base SHAs on every

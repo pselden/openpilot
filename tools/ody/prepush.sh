@@ -52,7 +52,8 @@ if [ "$QUICK" = 1 ]; then
     openpilot/common/tests/test_forks.py openpilot/common/tests/test_settings_profile.py openpilot/common/tests/test_whats_new.py \
     openpilot/selfdrive/controls/tests/test_accel_boost.py openpilot/selfdrive/controls/tests/test_cruise_accel.py \
     openpilot/selfdrive/controls/tests/test_launch_boost.py openpilot/selfdrive/controls/tests/test_turn_intent.py \
-    openpilot/selfdrive/locationd/test/test_torqued_odyssey.py openpilot/selfdrive/selfdrived/tests \
+    openpilot/selfdrive/locationd/test/test_torqued_odyssey.py openpilot/selfdrive/locationd/test/test_lagd_cache.py \
+    openpilot/selfdrive/selfdrived/tests \
     openpilot/selfdrive/ui/tests/test_experimental_mode.py openpilot/selfdrive/ui/tests/test_settings_groups.py \
     openpilot/selfdrive/ui/tests/test_status_pills.py openpilot/selfdrive/ui/tests/test_fork_switcher.py \
     openpilot/system/updated/tests/test_update_remote.py openpilot/sunnypilot/modeld_v2/tests/test_blendful.py \
